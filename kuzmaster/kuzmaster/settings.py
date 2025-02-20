@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*cf(w*5&^0g1x1jvp@mq9u12@8!55h)!_b%xpi3&!f79iro8!5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -76,8 +76,12 @@ WSGI_APPLICATION = 'kuzmaster.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'kuzov_db',
+        'USER': 'Kuzov',
+        'PASSWORD': 'hphp1740',
+        'HOST': 'localhost',
+        'PORT': 5432,
     }
 }
 
