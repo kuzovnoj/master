@@ -1,18 +1,18 @@
-from django.db import models
+# --------------- forms.py -------------------------
+from django import forms
 
-# здесь объявляйте класс менеджера
-class ModelManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(is_published=1, title__istartswith='ли')
+class AddPostForm(forms.Form):
+    title = forms.CharField(max_length=255)
+    slug = forms.SlugField(max_length=255)
+    content = forms.CharField(widget=forms.Textarea(), required=False)
+    is_published = forms.BooleanField(required=False)
 
+# --------------- views.py -------------------------
+# from django.shortcuts import render
+# from .forms import AddPostForm
 
-class Post(models.Model):
-    slug = models.SlugField(max_length=255, unique=True, db_index=True)
-    title = models.CharField(max_length=255)
-    content = models.TextField(blank=True)
-    time_create = models.DateTimeField(auto_now_add=True)
-    time_update = models.DateTimeField(auto_now=True)
-    is_published = models.BooleanField(default=False)
+# здесь продолжайте программу
 
-    objects = models.Manager()
-    model_manager = ModelManager()
+def post_new(request):
+    form = AddPostForm()
+    return render(request, 'women/addpage.html', {'form': form})

@@ -10,8 +10,13 @@ class Auto(models.Model):
 class ZakazNaryad(models.Model):
     auto = models.ForeignKey('Auto', on_delete=models.PROTECT, blank=True, default='Без номера')
     master = models.ForeignKey('Kmaster', on_delete=models.PROTECT, blank=True)
+    client = models.ForeignKey('Client', on_delete=models.PROTECT, blank=True)
     remont = models.TextField(max_length=250, blank=True)
     price = models.IntegerField(default=0)
 
-class Kmaster():
+class Kmaster(models.Model):
     pass
+
+class Client(models.Model):
+    name = models.CharField(max_length=30)
+    phone = models.IntegerField(blank=True)
