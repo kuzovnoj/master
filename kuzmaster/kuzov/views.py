@@ -1,17 +1,20 @@
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView
 from django.views import View
-from forms import FormAuto
+from .forms import FormAuto
+from .models import Auto, ZakazNaryad
 
 # Create your views here.
 
-class KuzovHome(View):
-    def get(self, request):
-        return render(request, 'kuzov/index.html')
- 
-    def post(self, request):
-        pass
+class KuzovHome(ListView):
+    template_name = 'kuzov/index.html'
+    context_object_name = 'naryad'
+    extra_context = {'title': 'Главная'}
+
+    def get_queryset(self):
+        return ZakazNaryad.objects.all()
     
+
 
 class AddAuto(CreateView):
     form_class = FormAuto

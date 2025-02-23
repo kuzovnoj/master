@@ -55,7 +55,9 @@ ROOT_URLCONF = 'kuzmaster.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,14 +78,21 @@ WSGI_APPLICATION = 'kuzmaster.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'kuzov_db',
-        'USER': 'Kuzov',
-        'PASSWORD': 'hphp1740',
-        'HOST': 'localhost',
-        'PORT': 5432,
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'kuzov_db',
+#        'USER': 'Kuzov',
+#        'PASSWORD': 'hphp1740',
+#        'HOST': 'localhost',
+#        'PORT': 5432,
+#    }
+#}
 
 
 # Password validation

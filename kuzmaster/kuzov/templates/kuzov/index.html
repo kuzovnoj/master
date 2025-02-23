@@ -1,16 +1,20 @@
-{% load static %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link type="text/css" href="{% static 'kuzov/css/styles.css' %}" rel="stylesheet">
-</head>
-<body>
+{% extends 'base.html' %}
+ 
 {% block content %}
-
-{% endblock content%}
-</body>
-</html>
+<ul class="list-articles">
+	{% for p in naryad %}
+			<li><div class="article-panel">
+	<p class="first">ТС: {{p.auto.marka}}</p>
+    <p class="first">Мастер: {{p.master.name}}</p>
+    <p class="first">Клиент: {{p.client.name}}</p>
+    <p class="first">Стоимость ремонта: {{p.price}}</p>
+	<p class="last">Дата: {{p.time_update|date:"d-m-Y H:i:s"}}</p>
+    </div>
+				<h2>{{p.auto.gos_num}}</h2>
+    {% autoescape off %}
+	{{p.remont|linebreaks|truncatewords:40}}
+    {% endautoescape %}
+			</li>
+	{% endfor %}
+</ul>
+{% endblock %}
