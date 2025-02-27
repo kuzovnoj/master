@@ -8,7 +8,7 @@ class AddPostForm(forms.Form):
     is_published = forms.BooleanField(required=False)
 
 # --------------- views.py -------------------------
-# from django.shortcuts import render
+from django.shortcuts import render
 # from .forms import AddPostForm
 
 # здесь продолжайте программу
