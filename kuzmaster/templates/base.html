@@ -9,6 +9,13 @@
     <link type="text/css" href="{% static 'kuzov/css/styles.css' %}" rel="stylesheet">
 </head>
 <body>
+
+    {% if user.is_authenticated %}
+    <li class="last"> {{user.username}} | <a href="{% url 'users:logout' %}">Выйти</a></li>
+    {% else %}
+    <li class="last"><a href="{% url 'users:login' %}">Войти</a> | <a href="{% url 'users:register' %}">Регистрация</a></li>
+    {% endif %}
+
 {% block content %}
 
 {% endblock content%}

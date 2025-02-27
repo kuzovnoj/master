@@ -1,12 +1,12 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView
 from django.views import View
 from .forms import FormAuto
 from .models import Auto, ZakazNaryad
 
-# Create your views here.
 
-class KuzovHome(ListView):
+class KuzovHome(LoginRequiredMixin, ListView):
     template_name = 'kuzov/index.html'
     context_object_name = 'naryad'
     extra_context = {'title': 'Главная'}
@@ -15,8 +15,7 @@ class KuzovHome(ListView):
         return ZakazNaryad.objects.all()
     
 
-
-class AddAuto(CreateView):
+class AddAuto(LoginRequiredMixin, CreateView):
     form_class = FormAuto
     template_name = 'kuzov/addauto.html'
     title_page = 'Добавление автомобиля'

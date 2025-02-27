@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'kuzov',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -76,23 +77,23 @@ WSGI_APPLICATION = 'kuzmaster.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 #DATABASES = {
 #    'default': {
-#        'ENGINE': 'django.db.backends.postgresql',
-#        'NAME': 'kuzov_db',
-#        'USER': 'Kuzov',
-#        'PASSWORD': 'hphp1740',
-#        'HOST': 'localhost',
-#        'PORT': 5432,
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
 #    }
 #}
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'kuzov_db',
+        'USER': 'kuzov',
+        'PASSWORD': 'hphp1740',
+        'HOST': 'localhost',
+        'PORT': 5432,
+    }
+}
 
 
 # Password validation
@@ -135,3 +136,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGOUT_REDIRECT_URL = 'home'
+LOGIN_URL = 'users:login'
