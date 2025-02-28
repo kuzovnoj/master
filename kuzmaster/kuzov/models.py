@@ -17,11 +17,16 @@ class ZakazNaryad(models.Model):
     client = models.ForeignKey('Client', on_delete=models.PROTECT, blank=True, null=True)
     remont = models.CharField(max_length=250, blank=True)
     price = models.IntegerField(default=0)
-    predoplata = models.IntegerField(default=0)
     avans = models.IntegerField(default=0)
     raskhod = models.IntegerField(default=0)
     time_create = models.DateTimeField(auto_now_add=True, null=True)
     time_update = models.DateTimeField(auto_now=True, null=True)
+
+
+class Oplata(models.Model):
+    zakaz = models.ForeignKey('ZakazNaryad', on_delete=models.PROTECT, related_name='oplata')
+    amount = models.IntegerField(default=0)
+    time_create = models.DateTimeField(auto_now_add=True, null=True)
 
 
 class Client(models.Model):
