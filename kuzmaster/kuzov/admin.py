@@ -14,14 +14,14 @@ class AutoAdmin(admin.ModelAdmin):
 @admin.register(ZakazNaryad)
 class ZakazNaryadAdmin(admin.ModelAdmin):
     list_display = ('id', 'auto', 'master', 'client', 'remont', 'price',
-                    'avans', 'raskhod', 'time_create', 'time_update')
+                    'avans', 'raskhod', 'time_create', 'time_update', 'oplata')
     list_editable = ('master', 'remont', 'price', 'avans',
                      'raskhod')
     list_per_page = 12
 
     def oplata(self, zakaznaryad: ZakazNaryad):
-        return 'oplata'
-
+        z1 = ZakazNaryad.objects.filter(oplata__zakaz=zakaznaryad.id).aggregate(Sum('oplata__amount'))
+        return z1['oplata__amount__sum']
 
 @admin.register(Client)
 class AutoAdmin(admin.ModelAdmin):
