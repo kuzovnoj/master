@@ -1,6 +1,7 @@
 menu = [{'title': "Создать заказ-наряд", 'url_name': 'zakaz_naryad'},
         {'title': "Взять аванс", 'url_name': 'get_avans'},
         {'title': "Добавить расходник", 'url_name': 'raskhod'},
+        {'title': "Оплата", 'url_name': 'oplata'},
         ]
 
 

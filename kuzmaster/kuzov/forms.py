@@ -1,5 +1,5 @@
 from django import forms
-from .models import Client, Auto, ZakazNaryad
+from .models import Client, Auto, ZakazNaryad, Avans, Oplata, Raskhod
 
 
 class FormAuto(forms.ModelForm):
@@ -9,9 +9,36 @@ class FormAuto(forms.ModelForm):
         fields = ['gos_num', 'marka']
 
 
-#class FormZakazNaryad(forms.ModelForm):
-#    
-#    def form_valid(self, form):
-#        w = form.save(commit=False)
-#        w.master = self.request.user
-#        return super().form_valid(form)    
+class FormClient(forms.ModelForm):
+
+    class Meta:
+        model = Client
+        fields = ['name', 'phone']
+
+
+class FormZakazNaryad(forms.ModelForm):
+
+    class Meta:
+        model = ZakazNaryad
+        fields = ['auto', 'master', 'client', 'remont', 'price']
+
+
+class FormAvans(forms.ModelForm):
+
+    class Meta:
+        model = Avans
+        fields = ['zakaz', 'amount']
+
+
+class FormOplata(forms.ModelForm):
+
+    class Meta:
+        model = Oplata
+        fields = ['zakaz', 'amount']
+
+
+class FormRaskhod(forms.ModelForm):
+
+    class Meta:
+        model = Raskhod
+        fields = ['zakaz', 'amount']
