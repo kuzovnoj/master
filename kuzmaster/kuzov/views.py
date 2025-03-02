@@ -4,12 +4,13 @@ from django.views.generic import ListView, CreateView
 from django.views import View
 from .forms import FormAuto
 from .models import Auto, ZakazNaryad
+from .utils import DataMixin
 
 
-class KuzovHome(LoginRequiredMixin, ListView):
+class KuzovHome(LoginRequiredMixin, DataMixin, ListView):
     template_name = 'kuzov/index.html'
     context_object_name = 'naryad'
-    extra_context = {'title': 'Главная'}
+    title_page = 'Главная страница'
 
     def get_queryset(self):
         return ZakazNaryad.objects.all()
@@ -25,3 +26,12 @@ class AddAuto(LoginRequiredMixin, CreateView):
 #        w = form.save(commit=False)
 #        w.author = self.request.user
 #        return super().form_valid(form)
+
+def zakaz(request):
+    pass
+
+def avans(request):
+    pass
+
+def raskhod(request):
+    pass
