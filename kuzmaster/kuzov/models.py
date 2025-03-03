@@ -12,6 +12,10 @@ class Auto(models.Model):
 
 
 class ZakazNaryad(models.Model):
+    class Status(models.IntegerChoices):
+        DONE = 0, 'Закрыт'
+        OPEN = 1, 'Открыт'
+
     auto = models.ForeignKey('Auto', on_delete=models.PROTECT, blank=True, default='Без номера')
     master = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, related_name='naryads', null=True, default=None)
     client = models.ForeignKey('Client', on_delete=models.PROTECT, blank=True, null=True)
@@ -19,6 +23,8 @@ class ZakazNaryad(models.Model):
     price = models.IntegerField(default=0)
     time_create = models.DateTimeField(auto_now_add=True, null=True)
     time_update = models.DateTimeField(auto_now=True, null=True)
+    in_work = models.BooleanField(choices=tuple(map(lambda x: (bool(x[0]), x[1]), Status.choices)),
+                                       default=Status.OPEN, verbose_name="Статус")
 
     def __str__(self):
         return 'Заказ-наряд' + str(self.id) + ' ' + self.auto.marka + ' ' + self.auto.gos_num
