@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views.generic import ListView, CreateView
 from django.views import View
 from  . import forms
-from .models import Auto, ZakazNaryad
+from .models import Auto, ZakazNaryad, Client
 from .utils import DataMixin
 from django.urls import reverse_lazy
 
@@ -38,6 +38,7 @@ class ZakazAddAuto(LoginRequiredMixin, CreateView):
 
 
 class ZakazNaryad2(LoginRequiredMixin, CreateView):
+#    form_class = forms.FormZakazNaryad(initial={'remont': 'dfnsdjknfsdjk'})
     form_class = forms.FormZakazNaryad
     template_name = 'kuzov/addauto2.html'
     title_page = 'Новый заказ-наряд'

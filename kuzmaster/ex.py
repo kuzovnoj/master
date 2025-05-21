@@ -1,18 +1,18 @@
-# --------------- forms.py -------------------------
-from django import forms
+def linear(nested_lists):
+    sp1 = []
+    def recurs(nested_lists):
+        if isinstance(nested_lists, int):
+            sp1.append(nested_lists)
+        else:
+            for i in nested_lists:
+                if isinstance(i, int):
+                    sp1.append(i)
+                else:
+                    recurs(i)
 
-class AddPostForm(forms.Form):
-    title = forms.CharField(max_length=255)
-    slug = forms.SlugField(max_length=255)
-    content = forms.CharField(widget=forms.Textarea(), required=False)
-    is_published = forms.BooleanField(required=False)
+    recurs(nested_lists)            
+    return sp1
 
-# --------------- views.py -------------------------
-from django.shortcuts import render
-# from .forms import AddPostForm
+my_list = [1, [4, 4], 2, [1, [2, 10]]]
 
-# здесь продолжайте программу
-
-def post_new(request):
-    form = AddPostForm()
-    return render(request, 'women/addpage.html', {'form': form})
+print(recursive_sum(my_list))
