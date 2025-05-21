@@ -38,7 +38,6 @@ class ZakazAddAuto(LoginRequiredMixin, CreateView):
 
 
 class ZakazNaryad2(LoginRequiredMixin, CreateView):
-#    form_class = forms.FormZakazNaryad(initial={'remont': 'dfnsdjknfsdjk'})
     form_class = forms.FormZakazNaryad
     template_name = 'kuzov/addauto2.html'
     title_page = 'Новый заказ-наряд'
