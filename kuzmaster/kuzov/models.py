@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.core.validators import RegexValidator
+
 
 class Auto(models.Model):
     marka = models.CharField(max_length=20)
@@ -50,7 +52,7 @@ class Raskhod(models.Model):
 
 class Client(models.Model):
     name = models.CharField(max_length=30)
-    phone = models.CharField(blank=True)
-        
+    phone_regex = RegexValidator(regex=r'^\+?[78]\d{10}$', message="Номер в формате: '+79999999999'")
+    phone = models.CharField(validators=[phone_regex], max_length=17, blank=True) # Validators should be a list        
     def __str__(self):
         return self.name + ' ' + self.phone

@@ -29,6 +29,12 @@ class AddClient(LoginRequiredMixin, CreateView):
     title_page = 'Добавление клиента'
     success_url = reverse_lazy('zakaz_naryad2')
 
+    def form_valid(self, form):
+        w = form.save(commit=False)
+        if w.phone.startswith('8'):
+            w.phone = '+7' + w.phone[1:]
+        return super().form_valid(form)
+
 
 class ZakazAddAuto(LoginRequiredMixin, CreateView):
     form_class = forms.FormAuto
