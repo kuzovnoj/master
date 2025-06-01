@@ -16,3 +16,4 @@ urlpatterns = [
 #        path('client/', views.AddClient.as_view(), name='client'),
         path('oplata/', views.AddOplata.as_view(), name='oplata'),
 ]
+

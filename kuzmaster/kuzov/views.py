@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView
 from django.views import View
+from django.http import HttpResponseNotFound
 from  . import forms
 from .models import Auto, ZakazNaryad, Client
 from .utils import DataMixin
@@ -106,3 +107,7 @@ class AddRaskhod(LoginRequiredMixin, CreateView):
     template_name = 'kuzov/addauto2.html'
     title_page = 'Добавить расходник'
     success_url = reverse_lazy('home')
+
+
+def page_not_found(request, exception):
+    return HttpResponseNotFound('<h1>Страница не найдена</h1>')
