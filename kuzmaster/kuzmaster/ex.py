@@ -1,9 +1,13 @@
-from django import template
+import asyncio
 
-register = template.Library()
 
-# здесь продолжайте программу
+async def main():
+    future = asyncio.Future()
+    print(future.done())  # False, Future находится в состоянии pending
 
-@register.inclusion_tag('women/mainmenu.html')
-def show_list(items=None):
-    return {'items': items}
+    # Устанавливаем результат
+    future.set_result(42)
+    print(future.done())  # True
+
+
+asyncio.run(main())

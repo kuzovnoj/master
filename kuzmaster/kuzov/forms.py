@@ -15,9 +15,9 @@ class FormClient(forms.ModelForm):
 
 
 class FormZakazNaryad(forms.ModelForm):
-#    client = forms.ModelChoiceField(queryset=Client.objects.all(), empty_label = Client.objects.get(name='Vasya'))
-#    def get_initial(self):
-#        return {"client": Client.objects.get(name='Vasya')}
+#    def __init__(self, *args, **kwargs):
+#        self.pk_slug = kwargs.pop('pk_slug')
+#    client = forms.ModelChoiceField(queryset=Client.objects.all(), initial=Client.objects.get(pk=int(pk_slug)))
     
     class Meta:
         model = ZakazNaryad
