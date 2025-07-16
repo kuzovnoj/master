@@ -15,5 +15,6 @@ urlpatterns = [
         path('client/<slug:pk_auto>/', views.addclient_view, name='client'),
 #        path('client/', views.AddClient.as_view(), name='client'),
         path('oplata/', views.AddOplata.as_view(), name='oplata'),
+        path('order/<slug:order_id>/', views.ShowOrder.as_view(), name='order'),
 ]
 

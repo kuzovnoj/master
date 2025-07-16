@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.core.validators import RegexValidator
+from django.urls import reverse
 
 
 class Auto(models.Model):
@@ -30,6 +31,9 @@ class ZakazNaryad(models.Model):
 
     def __str__(self):
         return 'Заказ-наряд' + str(self.id) + ' ' + self.auto.marka + ' ' + self.auto.gos_num
+
+    def get_absolute_url(self):
+        return reverse('order', kwargs={'order_id': self.pk})
 
 
 class Oplata(models.Model):

@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.shortcuts import render, redirect
-from django.views.generic import ListView, CreateView
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView, CreateView, DetailView
 from django.views import View
 from django.http import HttpResponseNotFound
 from  . import forms
@@ -16,7 +16,6 @@ class KuzovHome(LoginRequiredMixin, DataMixin, ListView):
 
     def get_queryset(self):
         return ZakazNaryad.objects.all()
-    
 
 class AddAuto(LoginRequiredMixin, CreateView):
     form_class = forms.FormAuto
@@ -111,3 +110,16 @@ class AddRaskhod(LoginRequiredMixin, CreateView):
 
 def page_not_found(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
+
+
+class ShowOrder(DataMixin, DetailView):
+    template_name = 'kuzov/order.html'
+    slug_url_kwarg = 'post_slug'
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return self.get_mixin_context(context, title=context['post'].title)
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(ZakazNaryad, slug=self.kwargs[self.slug_url_kwarg])
