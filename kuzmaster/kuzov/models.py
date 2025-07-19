@@ -33,7 +33,7 @@ class ZakazNaryad(models.Model):
         return 'Заказ-наряд' + str(self.id) + ' ' + self.auto.marka + ' ' + self.auto.gos_num
 
     def get_absolute_url(self):
-        return reverse('order', kwargs={'order_id': self.pk})
+        return reverse('show_order', kwargs={'order_id': self.pk})
 
 
 class Oplata(models.Model):
