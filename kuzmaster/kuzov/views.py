@@ -15,7 +15,7 @@ class KuzovHome(LoginRequiredMixin, DataMixin, ListView):
     title_page = 'Главная страница'
 
     def get_queryset(self):
-        return ZakazNaryad.objects.all()
+        return ZakazNaryad.opened.all()
 
 class AddAuto(LoginRequiredMixin, CreateView):
     form_class = forms.FormAuto

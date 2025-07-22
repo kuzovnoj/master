@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'kuzov',
     'users',
     'rest_framework',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

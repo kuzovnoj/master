@@ -15,6 +15,13 @@ class Auto(models.Model):
 
 
 class ZakazNaryad(models.Model):
+    class OpenModel(models.Manager):
+        def get_queryset(self):
+            return super().get_queryset().filter(in_work=ZakazNaryad.Status.OPEN)
+    
+    objects = models.Manager()
+    opened = OpenModel()
+    
     class Status(models.IntegerChoices):
         DONE = 0, 'Закрыт'
         OPEN = 1, 'Открыт'
@@ -34,6 +41,8 @@ class ZakazNaryad(models.Model):
 
     def get_absolute_url(self):
         return reverse('show_order', kwargs={'order_id': self.pk})
+
+
 
 
 class Oplata(models.Model):
