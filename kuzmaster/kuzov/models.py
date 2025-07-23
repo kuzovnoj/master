@@ -22,12 +22,16 @@ class ZakazNaryad(models.Model):
     objects = models.Manager()
     opened = OpenModel()
     
+    class Meta:
+        verbose_name = 'Заказ-наряд'
+        verbose_name_plural = 'Заказ-наряды'
+
     class Status(models.IntegerChoices):
         DONE = 0, 'Закрыт'
         OPEN = 1, 'Открыт'
 
     auto = models.ForeignKey('Auto', on_delete=models.PROTECT, blank=True, default='Без номера')
-    master = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, related_name='naryads', null=True, default=None)
+    master = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, related_name='naryads', null=True, default=None, verbose_name='master')
     client = models.ForeignKey('Client', on_delete=models.PROTECT, blank=True, null=True)
     remont = models.CharField(max_length=250, blank=True)
     price = models.IntegerField(default=0)

@@ -15,7 +15,7 @@ class AutoAdmin(admin.ModelAdmin):
 class ZakazNaryadAdmin(admin.ModelAdmin):
     list_display = ('id', 'auto', 'master', 'client', 'remont', 'price', 'oplata',
                     'avans', 'raskhod', 'time_create', 'time_update', 'in_work')
-    list_editable = ('master', 'remont', 'price', 'in_work')
+    list_editable = ('remont', 'price', 'in_work')
     list_per_page = 12
 
     def oplata(self, zakaznaryad: ZakazNaryad):
