@@ -17,10 +17,12 @@ class KuzovHome(LoginRequiredMixin, DataMixin, ListView):
     def get_queryset(self):
         return ZakazNaryad.opened.all()
 
+'''
 class AddAuto(LoginRequiredMixin, CreateView):
     form_class = forms.FormAuto
     template_name = 'kuzov/addauto.html'
     title_page = 'Добавление автомобиля'
+'''
 
 class ZakazNaryad2(LoginRequiredMixin, CreateView):
     form_class = forms.FormZakazNaryad
@@ -69,16 +71,17 @@ class AddClient(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 '''
 
-
+'''
 class ZakazAddAuto(LoginRequiredMixin, CreateView):
     form_class = forms.FormAuto
     template_name = 'kuzov/addauto2.html'
     title_page = 'Новый заказ-наряд'
     success_url = reverse_lazy('client')
+'''
 
 def add_auto_view(request):
     if request.method == 'POST':
-        form = forms.FormAuto(request.POST)
+        form = forms.FormAuto(request.POST, request.FILES)
         if form.is_valid():
             w = Auto.objects.create(**form.cleaned_data)
             pk_auto = w.pk

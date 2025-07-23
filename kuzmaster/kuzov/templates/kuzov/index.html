@@ -10,7 +10,9 @@
 				<p class="first">Ремонт: {{p.remont}}</p>
 				<p class="first">Стоимость ремонта: {{p.price}}</p>
 				</div>
-				
+				{% if p.auto.photo %}
+				<p><img class="img-article-left thumb" src="{{p.auto.photo.url}}"></p>
+				{% endif %}
 				<div class="clear"></div>
 				<p class="link-read-post"><a href="{{ p.get_absolute_url }}">Просмотр</a></p>
 			</li>

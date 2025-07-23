@@ -5,7 +5,7 @@ from .models import Client, Auto, ZakazNaryad, Avans, Oplata, Raskhod
 class FormAuto(forms.ModelForm):
     class Meta:
         model = Auto
-        fields = ['gos_num', 'marka']
+        fields = ['gos_num', 'marka', 'photo']
 
 
 class FormClient(forms.ModelForm):
