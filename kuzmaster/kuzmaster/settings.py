@@ -144,3 +144,4 @@ LOGIN_URL = 'users:login'
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_REDIRECT_URL = 'home'
 
+MEDIA_ROOT = BASE_DIR / 'media'

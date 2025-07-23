@@ -7,6 +7,7 @@ from django.urls import reverse
 class Auto(models.Model):
     marka = models.CharField(max_length=20)
     gos_num = models.CharField(max_length=10)
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d/', default=None, blank=True, null=True)
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
 
