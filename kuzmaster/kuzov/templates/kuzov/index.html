@@ -4,10 +4,9 @@
 <ul class="list-articles">
 	{% for p in naryad %}
 			<li><div class="article-panel">
-				<h2>{{p.auto.marka}}</h2>
-				<p class="first">ТС: {{p.auto.gos_num}}</p>
-				<p class="first">Клиент: {{p.client.name}}</p>
-				<p class="first">Ремонт: {{p.remont}}</p>
+				<h2>{{p.auto.marka}} {{p.auto.gos_num}}</h2>
+				<p class="first">Клиент: {{p.client.name}}.  </p>
+				<p class="first">Ремонт: {{p.remont}}.  </p>
 				<p class="first">Стоимость ремонта: {{p.price}}</p>
 				</div>
 				{% if p.auto.photo %}

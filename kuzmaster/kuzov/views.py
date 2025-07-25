@@ -4,10 +4,10 @@ from django.views.generic import ListView, CreateView, DetailView
 from django.views import View
 from django.http import HttpResponseNotFound
 from  . import forms
-from .models import Auto, ZakazNaryad, Client
+from .models import Auto, ZakazNaryad, Client, Avans, Raskhod
 from .utils import DataMixin
 from django.urls import reverse_lazy
-
+from django.db.models import Sum
 
 class KuzovHome(LoginRequiredMixin, DataMixin, ListView):
     template_name = 'kuzov/index.html'
@@ -127,4 +127,9 @@ class ShowOrder(DataMixin, DetailView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(ZakazNaryad, pk=self.kwargs[self.slug_url_kwarg])
-    
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['avans'] = Avans.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
+        context['raskhod'] = Raskhod.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
+        return context

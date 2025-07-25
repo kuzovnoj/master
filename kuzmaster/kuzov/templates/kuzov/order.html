@@ -2,11 +2,15 @@
  
 {% block content %}
 
-				<h2>{{order.auto.marka}}</h2>
-				<p class="first">ТС: {{order.auto.gos_num}}</p>
+				<h2>{{order.auto.marka}} {{order.auto.gos_num}}</h2>
 				<p class="first">Клиент: {{order.client.name}}</p>
+				<p class="first">Клиент: {{order.client.phone}}</p>
+				<p class="first">Мастер: {{order.master}}</p>
 				<p class="first">Ремонт: {{order.remont}}</p>
 				<p class="first">Стоимость ремонта: {{order.price}}</p>
+				<p class="first">Статус: {{order.in_work}}</p>
+				<p class="first">Аванс: {{avans}}</p>
+				<p class="first">Расходник: {{raskhod}}</p>
 
 
 {% endblock %}
