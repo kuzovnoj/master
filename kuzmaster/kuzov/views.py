@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.views import View
 from django.http import HttpResponseNotFound
 from  . import forms
@@ -132,4 +132,11 @@ class ShowOrder(DataMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['avans'] = Avans.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
         context['raskhod'] = Raskhod.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
+        context['edit_url'] = 'edit_order'
         return context
+
+class EditOrder(DataMixin, UpdateView):
+    model = ZakazNaryad
+    fields = ['remont', 'price']
+    template_name = 'kuzov/addauto2.html'
+    success_url = reverse_lazy('home')

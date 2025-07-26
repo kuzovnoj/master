@@ -11,6 +11,6 @@
 				<p class="first">Статус: {{order.in_work}}</p>
 				<p class="first">Аванс: {{avans}}</p>
 				<p class="first">Расходник: {{raskhod}}</p>
-
+				<p class="link-read-post"><a href="{% url 'edit_order' order.pk %}">Изменить</a></p>
 
 {% endblock %}
