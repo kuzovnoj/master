@@ -15,10 +15,6 @@ class FormClient(forms.ModelForm):
 
 
 class FormZakazNaryad(forms.ModelForm):
-#    def __init__(self, *args, **kwargs):
-#        self.pk_slug = kwargs.pop('pk_slug')
-#    client = forms.ModelChoiceField(queryset=Client.objects.all(), initial=Client.objects.get(pk=int(pk_slug)))
-    
     class Meta:
         model = ZakazNaryad
         fields = ['auto', 'master', 'client', 'remont', 'price']
