@@ -18,7 +18,9 @@ class KuzovHome(LoginRequiredMixin, DataMixin, ListView):
     title_page = 'Главная страница'
 
     def get_queryset(self):
-        return ZakazNaryad.opened.all()
+        if self.request.user.is_superuser:
+            return ZakazNaryad.opened.all()
+        return ZakazNaryad.opened.filter(master__pk=self.request.user.pk)
 
 
 class ZakazNaryad2(LoginRequiredMixin, CreateView):
