@@ -107,6 +107,7 @@ class ShowOrder(DataMixin, DetailView):
         context['avans'] = Avans.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
         context['raskhod'] = Raskhod.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
         context['edit_url'] = 'edit_order'
+        context['title'] = 'Заказ-наряд ' + self.kwargs[self.slug_url_kwarg]
         return context
 
 

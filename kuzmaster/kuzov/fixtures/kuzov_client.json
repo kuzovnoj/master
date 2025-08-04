@@ -1,0 +1,1 @@
+[{"model": "kuzov.client", "pk": 1, "fields": {"name": "Георгий", "phone": "+79145361212"}}, {"model": "kuzov.client", "pk": 2, "fields": {"name": "Синий", "phone": "+79995354444"}}]
