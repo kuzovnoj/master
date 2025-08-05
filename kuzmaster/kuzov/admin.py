@@ -52,6 +52,6 @@ class AvansAdmin(admin.ModelAdmin):
 
 @admin.register(Raskhod)
 class AvansAdmin(admin.ModelAdmin):
-    list_display = ('id', 'zakaz', 'amount', 'time_create')
-    list_editable = ('zakaz', 'amount')
+    list_display = ('id', 'zakaz', 'amount', 'time_create', 'name', 'date', 'cheque')
+    list_editable = ('zakaz', 'amount', 'name', 'date', 'cheque')
     list_per_page = 12

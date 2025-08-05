@@ -63,6 +63,9 @@ class Avans(models.Model):
 class Raskhod(models.Model):
     zakaz = models.ForeignKey('ZakazNaryad', on_delete=models.PROTECT, related_name='raskhod')
     amount = models.IntegerField(default=0)
+    name = models.CharField(default='расходник')
+    date = models.DateField(null=True)
+    cheque = models.ImageField(upload_to='cheques/%Y/%m/%d/', default=None, blank=True, null=True)
     time_create = models.DateTimeField(auto_now_add=True)
 
 

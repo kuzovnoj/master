@@ -35,4 +35,5 @@ class FormOplata(forms.ModelForm):
 class FormRaskhod(forms.ModelForm):
     class Meta:
         model = Raskhod
-        fields = ['zakaz', 'amount']
+        fields = ['zakaz', 'amount', 'name', 'date', 'cheque']
+        widgets = {'date': forms.DateInput(attrs={'type': 'date'})}
