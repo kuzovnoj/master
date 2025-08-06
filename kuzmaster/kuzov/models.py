@@ -42,6 +42,8 @@ class ZakazNaryad(models.Model):
                                        default=Status.OPEN, verbose_name="Статус")
 
     def __str__(self):
+        if self.id == 1:
+            return 'Расходы СТО'
         return 'Заказ-наряд' + str(self.id) + ' ' + self.auto.marka + ' ' + self.auto.gos_num
 
     def get_absolute_url(self):
@@ -52,12 +54,14 @@ class Oplata(models.Model):
     zakaz = models.ForeignKey('ZakazNaryad', on_delete=models.PROTECT, related_name='oplata')
     amount = models.IntegerField(default=0)
     time_create = models.DateTimeField(auto_now_add=True, null=True)
+    cashier = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, default=None)
 
 
 class Avans(models.Model):
     zakaz = models.ForeignKey('ZakazNaryad', on_delete=models.PROTECT, related_name='avans')
     amount = models.IntegerField(default=0)
     time_create = models.DateTimeField(auto_now_add=True)
+    cashier = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, default=None)
 
 
 class Raskhod(models.Model):
@@ -67,7 +71,8 @@ class Raskhod(models.Model):
     date = models.DateField(null=True)
     cheque = models.ImageField(upload_to='cheques/%Y/%m/%d/', default=None, blank=True, null=True)
     time_create = models.DateTimeField(auto_now_add=True)
-
+    cashier = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, default=None)
+    
 
 class Client(models.Model):
     name = models.CharField(max_length=30)

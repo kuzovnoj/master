@@ -23,17 +23,17 @@ class FormZakazNaryad(forms.ModelForm):
 class FormAvans(forms.ModelForm):
     class Meta:
         model = Avans
-        fields = ['zakaz', 'amount']
+        fields = ['zakaz', 'amount', 'cashier']
 
 
 class FormOplata(forms.ModelForm):
     class Meta:
         model = Oplata
-        fields = ['zakaz', 'amount']
+        fields = ['zakaz', 'amount', 'cashier']
 
 
 class FormRaskhod(forms.ModelForm):
     class Meta:
         model = Raskhod
-        fields = ['zakaz', 'amount', 'name', 'date', 'cheque']
+        fields = ['zakaz', 'amount', 'name', 'date', 'cheque', 'cashier']
         widgets = {'date': forms.DateInput(attrs={'type': 'date'})}

@@ -1,10 +1,11 @@
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.views import View
 from django.http import HttpResponseNotFound
 from  . import forms
-from .models import Auto, ZakazNaryad, Client, Avans, Raskhod
+from .models import Auto, ZakazNaryad, Client, Avans, Raskhod, Oplata
 from .utils import DataMixin
 from django.urls import reverse_lazy
 from django.db.models import Sum
@@ -21,6 +22,15 @@ class KuzovHome(LoginRequiredMixin, DataMixin, ListView):
         if self.request.user.is_superuser:
             return ZakazNaryad.opened.all()
         return ZakazNaryad.opened.filter(master__pk=self.request.user.pk)
+    
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_superuser:
+            total = Oplata.objects.filter(cashier=self.request.user).aggregate(Sum('amount'))['amount__sum'] - \
+            Avans.objects.filter(cashier=self.request.user).aggregate(Sum('amount'))['amount__sum'] - \
+            Raskhod.objects.filter(cashier=self.request.user).aggregate(Sum('amount'))['amount__sum']
+            context['total'] = total
+        return context
 
 
 class ZakazNaryad2(LoginRequiredMixin, CreateView):
@@ -38,7 +48,7 @@ class ZakazNaryad2(LoginRequiredMixin, CreateView):
         initial['client'] = Client.objects.get(pk=pk_client)
         return initial
 
-
+@login_required
 def addclient_view(request, pk_auto):
     if request.method == 'POST':
         form = forms.FormClient(request.POST)
@@ -55,7 +65,7 @@ def addclient_view(request, pk_auto):
     
     return render(request, 'kuzov/addclient.html', {'form': form})
     
-
+@login_required
 def add_auto_view(request):
     if request.method == 'POST':
         form = forms.FormAuto(request.POST, request.FILES)
@@ -69,25 +79,43 @@ def add_auto_view(request):
     return render(request, 'kuzov/addauto2.html', {'form': form})
 
 
-class AddAvans(LoginRequiredMixin, CreateView):
+class AddAvans(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     form_class = forms.FormAvans
     template_name = 'kuzov/addauto2.html'
     title_page = 'Взять аванс'
     success_url = reverse_lazy('home')
+    permission_required = 'kuzov.add_avans'
+
+    def get_initial(self):
+        initial = super(AddAvans, self).get_initial()
+        initial['cashier'] = self.request.user
+        return initial
 
 
-class AddOplata(LoginRequiredMixin, CreateView):
+class AddOplata(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     form_class = forms.FormOplata
     template_name = 'kuzov/addauto2.html'
     title_page = 'Добавить оплату'
     success_url = reverse_lazy('home')
+    permission_required = 'kuzov.add_oplata'
+    
+    def get_initial(self):
+        initial = super(AddOplata, self).get_initial()
+        initial['cashier'] = self.request.user
+        return initial
 
 
-class AddRaskhod(LoginRequiredMixin, CreateView):
+class AddRaskhod(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     form_class = forms.FormRaskhod
     template_name = 'kuzov/addauto2.html'
     title_page = 'Добавить расходник'
     success_url = reverse_lazy('home')
+    permission_required = 'kuzov.add_raskhod'
+
+    def get_initial(self):
+        initial = super(AddRaskhod, self).get_initial()
+        initial['cashier'] = self.request.user
+        return initial
 
 
 def page_not_found(request, exception):
@@ -106,6 +134,7 @@ class ShowOrder(DataMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['avans'] = Avans.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
         context['raskhod'] = Raskhod.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
+        context['oplata'] = Oplata.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
         context['edit_url'] = 'edit_order'
         context['title'] = 'Заказ-наряд ' + self.kwargs[self.slug_url_kwarg]
         return context
