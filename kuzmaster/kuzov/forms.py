@@ -35,5 +35,5 @@ class FormOplata(forms.ModelForm):
 class FormRaskhod(forms.ModelForm):
     class Meta:
         model = Raskhod
-        fields = ['zakaz', 'amount', 'name', 'date', 'cheque', 'cashier']
-        widgets = {'date': forms.DateInput(attrs={'type': 'date'})}
+        fields = ['zakaz', 'amount', 'name', 'spare_part', 'date', 'cheque', 'cashier']
+        widgets = {'date': forms.DateInput(attrs={'type': 'date'}), 'spare_part': forms.CheckboxInput()}

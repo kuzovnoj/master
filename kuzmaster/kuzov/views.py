@@ -132,9 +132,15 @@ class ShowOrder(DataMixin, DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['avans'] = Avans.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
-        context['raskhod'] = Raskhod.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
-        context['oplata'] = Oplata.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
+        sum_avans = Avans.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
+        sum_raskhod = Raskhod.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg], spare_part=False).aggregate(Sum('amount'))['amount__sum']
+        sum_parts = Raskhod.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg], spare_part=True).aggregate(Sum('amount'))['amount__sum']
+        sum_oplata = Oplata.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
+        context['avans'] = sum_avans
+        context['raskhod'] = sum_raskhod
+        context['spare_part'] = sum_parts
+        context['oplata'] = sum_oplata
+        context['to_be_paid'] = 'order.pk'
         context['edit_url'] = 'edit_order'
         context['title'] = 'Заказ-наряд ' + self.kwargs[self.slug_url_kwarg]
         return context
