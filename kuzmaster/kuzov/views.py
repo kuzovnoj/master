@@ -26,10 +26,13 @@ class KuzovHome(LoginRequiredMixin, DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_superuser:
-            total = Oplata.objects.filter(cashier=self.request.user).aggregate(Sum('amount'))['amount__sum'] - \
-            Avans.objects.filter(cashier=self.request.user).aggregate(Sum('amount'))['amount__sum'] - \
-            Raskhod.objects.filter(cashier=self.request.user).aggregate(Sum('amount'))['amount__sum']
-            context['total'] = total
+            try:
+                total = Oplata.objects.filter(cashier=self.request.user).aggregate(Sum('amount'))['amount__sum'] - \
+                Avans.objects.filter(cashier=self.request.user).aggregate(Sum('amount'))['amount__sum'] - \
+                Raskhod.objects.filter(cashier=self.request.user).aggregate(Sum('amount'))['amount__sum']
+                context['total'] = total
+            except:
+                pass
         return context
 
 

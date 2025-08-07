@@ -6,11 +6,15 @@ register = template.Library()
 
 @register.filter
 def subtract(value, arg):
-    return value - arg
+    try:
+        return value - arg
+    except:
+        return None
+
 
 @register.filter
 def divide(value, arg):
     try:
         return int(value) / int(arg)
-    except (ValueError, ZeroDivisionError):
+    except:
         return None

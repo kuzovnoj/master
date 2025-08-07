@@ -53,6 +53,7 @@ class ZakazNaryad(models.Model):
 class Oplata(models.Model):
     zakaz = models.ForeignKey('ZakazNaryad', on_delete=models.PROTECT, related_name='oplata')
     amount = models.IntegerField(default=0)
+    date = models.DateField(null=True)
     time_create = models.DateTimeField(auto_now_add=True, null=True)
     cashier = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, default=None)
 
@@ -60,6 +61,7 @@ class Oplata(models.Model):
 class Avans(models.Model):
     zakaz = models.ForeignKey('ZakazNaryad', on_delete=models.PROTECT, related_name='avans')
     amount = models.IntegerField(default=0)
+    date = models.DateField(null=True)
     time_create = models.DateTimeField(auto_now_add=True)
     cashier = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, default=None)
 
