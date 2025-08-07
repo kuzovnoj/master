@@ -47,7 +47,7 @@ class ZakazNaryad2(LoginRequiredMixin, CreateView):
         pk_auto = int(self.kwargs['pk_slug'].split('_')[0])
         pk_client = int(self.kwargs['pk_slug'].split('_')[1])
         initial['auto'] = Auto.objects.get(pk=pk_auto)
-        initial['master'] = self.request.user
+#        initial['master'] = self.request.user
         initial['client'] = Client.objects.get(pk=pk_client)
         return initial
 
@@ -139,10 +139,22 @@ class ShowOrder(DataMixin, DetailView):
         sum_raskhod = Raskhod.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg], spare_part=False).aggregate(Sum('amount'))['amount__sum']
         sum_parts = Raskhod.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg], spare_part=True).aggregate(Sum('amount'))['amount__sum']
         sum_oplata = Oplata.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg]).aggregate(Sum('amount'))['amount__sum']
-        context['avans'] = sum_avans
-        context['raskhod'] = sum_raskhod
-        context['spare_part'] = sum_parts
-        context['oplata'] = sum_oplata
+        if sum_avans:
+            context['avans'] = sum_avans
+        else:
+            context['avans'] = 0
+        if sum_raskhod:
+            context['raskhod'] = sum_raskhod
+        else:
+            context['raskhod'] = 0
+        if sum_parts:
+            context['spare_part'] = sum_parts
+        else:
+            context['spare_part'] = 0
+        if sum_oplata:
+            context['oplata'] = sum_oplata
+        else:
+            context['oplata'] = 0
         context['to_be_paid'] = 'order.pk'
         context['edit_url'] = 'edit_order'
         context['title'] = 'Заказ-наряд ' + self.kwargs[self.slug_url_kwarg]
@@ -151,6 +163,6 @@ class ShowOrder(DataMixin, DetailView):
 
 class EditOrder(DataMixin, UpdateView):
     model = ZakazNaryad
-    fields = ['remont', 'price']
+    fields = ['remont', 'price', 'in_work']
     template_name = 'kuzov/addauto2.html'
     success_url = reverse_lazy('home')

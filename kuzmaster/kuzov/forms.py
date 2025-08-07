@@ -21,13 +21,15 @@ class FormZakazNaryad(forms.ModelForm):
         
 
 class FormAvans(forms.ModelForm):
+    zakaz = forms.ModelChoiceField(queryset=ZakazNaryad.opened.all())
     class Meta:
         model = Avans
-        fields = ['zakaz', 'amount', 'date', 'cashier']
+        fields = ['zakaz', 'amount', 'date', 'comment', 'cashier']
         widgets = {'date': forms.DateInput(attrs={'type': 'date'})}
-        
+
 
 class FormOplata(forms.ModelForm):
+    zakaz = forms.ModelChoiceField(queryset=ZakazNaryad.opened.all())    
     class Meta:
         model = Oplata
         fields = ['zakaz', 'amount', 'date', 'cashier']
@@ -35,6 +37,7 @@ class FormOplata(forms.ModelForm):
 
 
 class FormRaskhod(forms.ModelForm):
+    zakaz = forms.ModelChoiceField(queryset=ZakazNaryad.opened.all())
     class Meta:
         model = Raskhod
         fields = ['zakaz', 'amount', 'name', 'spare_part', 'date', 'cheque', 'cashier']
