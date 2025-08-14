@@ -9,13 +9,13 @@
 				<p class="first">Мастер: {{order.master}}</p>
 				<p class="first">Ремонт: {{order.remont}}</p>
 				<p class="first">Стоимость ремонта: {{order.price}}</p>
-				<p class="first">Запчасти: {{spare_part}}</p>
-				<p class="first">Оплата: {{oplata}}</p>
+				<p class="first"><a href="{% url 'order_spareparts' order.pk %}">Запчасти: {{spare_part}}</a></p>
+				<p class="first"><a href="{% url 'order_oplata' order.pk %}">Оплата: {{oplata}}</a></p>
 				<p class="first">К оплате: {{order.price|add:spare_part|subtract:oplata}}</p>
 				<p class="first">Статус: {{order.in_work}}</p>
-				<p class="first">Аванс: {{avans}}</p>
+				<p class="first"><a href="{% url 'order_avans' order.pk %}">Аванс: {{avans}}</a></p>
 				<p class="first">На руки: {{order.price|subtract:raskhod|divide:2|subtract:avans}}</p>
-				<p class="first">Расходник: {{raskhod}}</p>
+				<p class="first"><a href="{% url 'order_raskhod' order.pk %}">Расходник: {{raskhod}}</a></p>
 				<p class="link-read-post"><a href="{% url 'edit_order' order.pk %}">Изменить</a></p>
 
 {% endblock %}

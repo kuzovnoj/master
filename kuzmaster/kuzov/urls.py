@@ -12,5 +12,9 @@ urlpatterns = [
         path('oplata/', views.AddOplata.as_view(), name='oplata'),
         path('order/<slug:order_id>/', views.ShowOrder.as_view(), name='show_order'),
         path('edit-order/<int:pk>/', views.EditOrder.as_view(), name='edit_order'),
+        path('order_raskhod/<slug:order_id>/', views.OrderRaskhod.as_view(), name='order_raskhod'),
+        path('order_spareparts/<slug:order_id>/', views.OrderSparePart.as_view(), name='order_spareparts'),
+        path('order_avans/<slug:order_id>/', views.OrderAvans.as_view(), name='order_avans'),
+        path('order_oplata/<slug:order_id>/', views.OrderOplata.as_view(), name='order_oplata'),
 ]
 

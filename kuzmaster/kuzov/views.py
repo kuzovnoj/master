@@ -166,3 +166,43 @@ class EditOrder(DataMixin, UpdateView):
     fields = ['remont', 'price', 'in_work']
     template_name = 'kuzov/addauto2.html'
     success_url = reverse_lazy('home')
+
+
+class OrderRaskhod(LoginRequiredMixin, DataMixin, ListView):
+    template_name = 'kuzov/order_raskhod.html'
+    context_object_name = 'order'
+    title_page = 'Заказ-наряд расходник'
+    slug_url_kwarg = 'order_id'
+
+    def get_queryset(self):
+        return Raskhod.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg], spare_part=False)
+    
+
+class OrderSparePart(LoginRequiredMixin, DataMixin, ListView):
+    template_name = 'kuzov/order_spare_parts.html'
+    context_object_name = 'order'
+    title_page = 'Заказ-наряд запчасти'
+    slug_url_kwarg = 'order_id'
+
+    def get_queryset(self):
+        return Raskhod.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg], spare_part=True)
+
+
+class OrderAvans(LoginRequiredMixin, DataMixin, ListView):
+    template_name = 'kuzov/order_avans.html'
+    context_object_name = 'order'
+    title_page = 'Заказ-наряд авансы'
+    slug_url_kwarg = 'order_id'
+
+    def get_queryset(self):
+        return Avans.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg])
+
+
+class OrderOplata(LoginRequiredMixin, DataMixin, ListView):
+    template_name = 'kuzov/order_oplata.html'
+    context_object_name = 'order'
+    title_page = 'Заказ-наряд оплата'
+    slug_url_kwarg = 'order_id'
+
+    def get_queryset(self):
+        return Oplata.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg])

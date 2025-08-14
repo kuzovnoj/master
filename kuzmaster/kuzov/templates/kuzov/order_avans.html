@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+<ul class="list-articles">
+	{% for p in order %}
+			<li><div class="article-panel">
+				<h2>{{p.amount}}</h2>
+				<p class="first">Наименование: {{p.comment}}.  </p>
+				<p class="first">Дата: {{p.date}}.  </p>
+				</div>
+				<div class="clear"></div>
+			</li>
+	{% endfor %}
+</ul>
+{% endblock %}
