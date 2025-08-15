@@ -168,6 +168,20 @@ class EditOrder(DataMixin, UpdateView):
     success_url = reverse_lazy('home')
 
 
+class EditAuto(DataMixin, UpdateView):
+    model = Auto
+    fields = ['marka', 'gos_num', 'photo']
+    template_name = 'kuzov/addauto2.html'
+    success_url = reverse_lazy('home')
+
+
+class EditRaskhod(DataMixin, UpdateView):
+    model = Raskhod
+    fields = ['zakaz', 'amount', 'name', 'spare_part', 'date', 'cheque']
+    template_name = 'kuzov/addauto2.html'
+    success_url = reverse_lazy('home')
+
+
 class OrderRaskhod(LoginRequiredMixin, DataMixin, ListView):
     template_name = 'kuzov/order_raskhod.html'
     context_object_name = 'order'

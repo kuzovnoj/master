@@ -4,7 +4,7 @@
 <ul class="list-articles">
 	{% for p in order %}
 			<li><div class="article-panel">
-				<h2>{{p.amount}}</h2>
+				<h2><a href="{% url 'edit_raskhod' p.pk %}">{{p.amount}}</a></h2>
 				<p class="first">Наименование: {{p.name}}.  </p>
 				<p class="first">Дата: {{p.date}}.  </p>
 				</div>

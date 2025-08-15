@@ -3,7 +3,7 @@
 
 {% block content %}
 
-				<h2>{{order.auto.marka}} {{order.auto.gos_num}}</h2>
+				<h2><a href="{% url 'edit_auto' order.auto.pk %}">{{order.auto.marka}} {{order.auto.gos_num}}</a></h2>
 				<p class="first">Клиент: {{order.client.name}}</p>
 				<p class="first">Клиент: {{order.client.phone}}</p>
 				<p class="first">Мастер: {{order.master}}</p>
