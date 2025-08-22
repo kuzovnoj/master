@@ -11,6 +11,9 @@ from django.urls import reverse_lazy
 from django.db.models import Sum
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.mixins import ListModelMixin
+from .serializers import ZakazNaryadSerializer
 
 
 class KuzovHome(LoginRequiredMixin, DataMixin, ListView):
@@ -220,3 +223,8 @@ class OrderOplata(LoginRequiredMixin, DataMixin, ListView):
 
     def get_queryset(self):
         return Oplata.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg])
+
+
+class APIKuzovView(ListModelMixin, GenericViewSet):
+    queryset = ZakazNaryad.objects.all()
+    serializer_class = ZakazNaryadSerializer

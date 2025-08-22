@@ -18,5 +18,6 @@ urlpatterns = [
         path('order_spareparts/<slug:order_id>/', views.OrderSparePart.as_view(), name='order_spareparts'),
         path('order_avans/<slug:order_id>/', views.OrderAvans.as_view(), name='order_avans'),
         path('order_oplata/<slug:order_id>/', views.OrderOplata.as_view(), name='order_oplata'),
+        path('api/', views.APIKuzovView.as_view({'get': 'list'}), name='api_home'),
 ]
 
