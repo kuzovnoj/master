@@ -20,8 +20,13 @@ class ZakazNaryad(models.Model):
         def get_queryset(self):
             return super().get_queryset().filter(in_work=ZakazNaryad.Status.OPEN)
     
+    class DoneModel(models.Manager):
+        def get_queryset(self):
+            return super().get_queryset().filter(in_work=ZakazNaryad.Status.DONE)
+    
     objects = models.Manager()
     opened = OpenModel()
+    done = DoneModel()
     
     class Meta:
         verbose_name = 'Заказ-наряд'

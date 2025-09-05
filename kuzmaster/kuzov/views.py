@@ -38,6 +38,27 @@ class KuzovHome(LoginRequiredMixin, DataMixin, ListView):
                 pass
         return context
 
+class KuzovHomeDone(LoginRequiredMixin, DataMixin, ListView):
+    template_name = 'kuzov/index.html'
+    context_object_name = 'naryad'
+    title_page = 'Выполненные'
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return ZakazNaryad.done.all()
+        return ZakazNaryad.done.filter(master__pk=self.request.user.pk)
+    
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_superuser:
+            try:
+                total = Oplata.objects.filter(cashier=self.request.user).aggregate(Sum('amount'))['amount__sum'] - \
+                Avans.objects.filter(cashier=self.request.user).aggregate(Sum('amount'))['amount__sum'] - \
+                Raskhod.objects.filter(cashier=self.request.user).aggregate(Sum('amount'))['amount__sum']
+                context['total'] = total
+            except:
+                pass
+        return context
 
 class ZakazNaryad2(LoginRequiredMixin, CreateView):
     form_class = forms.FormZakazNaryad
