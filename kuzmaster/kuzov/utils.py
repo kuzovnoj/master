@@ -1,6 +1,6 @@
 menu = [{'title': "Главная", 'url_name': 'home'},
         {'title': "Сделано", 'url_name': 'home_done'},
-        {'title': "Создать заказ-наряд", 'url_name': 'zakaz_naryad'},
+        {'title': "ЗН", 'url_name': 'zakaz_naryad'},
         {'title': "Аванс", 'url_name': 'get_avans'},
         {'title': "Расходник", 'url_name': 'raskhod'},
         {'title': "Оплата", 'url_name': 'oplata'},
