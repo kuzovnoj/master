@@ -22,7 +22,7 @@ class ZakazNaryad(models.Model):
     
     class DoneModel(models.Manager):
         def get_queryset(self):
-            return super().get_queryset().filter(in_work=ZakazNaryad.Status.DONE)
+            return super().get_queryset().filter(in_work=ZakazNaryad.Status.DONE).order_by('-time_create')
     
     objects = models.Manager()
     opened = OpenModel()
