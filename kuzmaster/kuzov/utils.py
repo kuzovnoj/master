@@ -8,6 +8,7 @@ menuSuperUser = [
     {'title': "Аванс", 'url_name': 'get_avans'},
     {'title': "Расходник", 'url_name': 'raskhod'},
     {'title': "Оплата", 'url_name': 'oplata'},
+    {'title': "Последние", 'url_name': 'last'},
 ]
 
 class DataMixin:

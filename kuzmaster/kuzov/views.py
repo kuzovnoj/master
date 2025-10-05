@@ -105,6 +105,20 @@ def add_auto_view(request):
     
     return render(request, 'kuzov/addauto2.html', {'form': form})
 
+@login_required
+def last_operations_view(request):
+    avans = Avans.objects.all().order_by('-time_create')[:10]
+    raskhod = Raskhod.objects.all().order_by('-time_create')[:10]
+    oplata = Oplata.objects.all().order_by('-time_create')[:10]
+
+    data = {
+        'title': 'Последние операции',
+        'avans': avans,
+        'raskhod': raskhod,
+        'oplata': oplata,
+    }
+
+    return render(request, 'kuzov/last_operations.html', context=data)
 
 class AddAvans(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     form_class = forms.FormAvans
