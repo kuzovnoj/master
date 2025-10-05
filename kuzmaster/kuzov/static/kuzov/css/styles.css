@@ -78,6 +78,23 @@ ul.list-articles li {
 .header {
 	background: #3F4137;
 	height: 60px;
+	overflow-x: auto;
+	white-space: nowrap;
+}
+.header ul {
+    display: flex; /* Использует Flexbox для выстраивания элементов в строку */
+    padding: 0;
+    margin: 0;
+    list-style: none; /* Убирает стандартные маркеры списка */
+}
+
+.nav-menu li {
+    flex: 0 0 auto; /* Элементы не будут растягиваться или сжиматься */
+    margin-right: 10px; /* Отступ между элементами */
+}
+
+.nav-menu li:last-child {
+    margin-right: 0;
 }
 /*
 .logo {

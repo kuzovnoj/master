@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
 
+CSRF_TRUSTED_ORIGINS = ['https://kuzovnojmaster.ru',] #needed for Https
 
 # Application definition
 
