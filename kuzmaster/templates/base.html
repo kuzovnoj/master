@@ -21,6 +21,9 @@
 {% endfor %}
 
 {% if user.is_superuser %}
+{% for m in menu_superuser %}
+	<li><a href="{% url m.url_name %}">{{m.title}}</a></li>
+{% endfor %}
 <li class="last">
     {{total}}
 </li>

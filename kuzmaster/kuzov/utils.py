@@ -1,11 +1,14 @@
-menu = [{'title': "Главная", 'url_name': 'home'},
-        {'title': "Сделано", 'url_name': 'home_done'},
-        {'title': "ЗН", 'url_name': 'zakaz_naryad'},
-        {'title': "Аванс", 'url_name': 'get_avans'},
-        {'title': "Расходник", 'url_name': 'raskhod'},
-        {'title': "Оплата", 'url_name': 'oplata'},
-        ]
+menu = [
+    {'title': "Главная", 'url_name': 'home'},
+    {'title': "Сделано", 'url_name': 'home_done'},
+    {'title': "ЗН", 'url_name': 'zakaz_naryad'},
+]
 
+menuSuperUser = [
+    {'title': "Аванс", 'url_name': 'get_avans'},
+    {'title': "Расходник", 'url_name': 'raskhod'},
+    {'title': "Оплата", 'url_name': 'oplata'},
+]
 
 class DataMixin:
     paginate_by = 10
@@ -19,4 +22,7 @@ class DataMixin:
 
         if 'mainmenu' not in self.extra_context:
             self.extra_context['mainmenu'] = menu
+        
+        if 'menu_superuser' not in self.extra_context:
+            self.extra_context['menu_superuser'] = menuSuperUser
 
