@@ -1,40 +1,51 @@
 {% extends 'base.html' %}
  
 {% block content %}
+<h2>Авансы</h2>
 <ul class="list-articles">
 	{% for p in avans %}
+		<a href="{% url 'edit_avans' p.pk %}">
 			<li><div class="article-panel">
-				<h2>{{p.date}} {{p.time_create}}</h2>
-				<p class="first">Кассир: {{p.cashier}}.  </p>
+				<p class="first">{{p.time_create}}</p>
+				<p class="first">{{p.zakaz}}.  </p>
 				<p class="first">Сумма: {{p.amount}}.  </p>
+				<p class="first">Дата: {{p.date}}.  </p>
 				</div>
 				<div class="clear"></div>
 			</li>
+		</a>
 	{% endfor %}
 </ul>
 
+<h2>Расходник</h2>
 <ul class="list-articles">
 	{% for p in raskhod %}
+		<a href="{% url 'edit_raskhod' p.pk %}">
 			<li><div class="article-panel">
-				<h2>{{p.date}} {{p.time_create}}</h2>
-				<p class="first">Кассир: {{p.cashier}}.  </p>
+				<p class="first">{{p.time_create}}</p>
+				<p class="first">{{p.zakaz}}.  </p>
 				<p class="first">Сумма: {{p.amount}}.  </p>
+				<p class="first">Дата: {{p.date}}.  </p>
 				</div>
 				<div class="clear"></div>
 			</li>
+		</a>
 	{% endfor %}
 </ul>
 
+<h2>Оплата</h2>
 <ul class="list-articles">
 	{% for p in oplata %}
+		<a href="{% url 'edit_oplata' p.pk %}">
 			<li><div class="article-panel">
-				<h2>{{p.date}} {{p.time_create}}</h2>
-				<p class="first">Кассир: {{p.cashier}}.  </p>
+				<p class="first">{{p.time_create}}</p>
+				<p class="first">{{p.zakaz}}.  </p>
 				<p class="first">Сумма: {{p.amount}}.  </p>
+				<p class="first">Дата: {{p.date}}.  </p>
 				</div>
 				<div class="clear"></div>
 			</li>
+		</a>
 	{% endfor %}
 </ul>
 {% endblock %}
-

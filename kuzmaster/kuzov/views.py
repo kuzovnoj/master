@@ -107,9 +107,9 @@ def add_auto_view(request):
 
 @login_required
 def last_operations_view(request):
-    avans = Avans.objects.all().order_by('-time_create')[:10]
-    raskhod = Raskhod.objects.all().order_by('-time_create')[:10]
-    oplata = Oplata.objects.all().order_by('-time_create')[:10]
+    avans = Avans.objects.filter(cashier=request.user.pk).order_by('-time_create')[:10]
+    raskhod = Raskhod.objects.filter(cashier=request.user.pk).order_by('-time_create')[:10]
+    oplata = Oplata.objects.filter(cashier=request.user.pk).order_by('-time_create')[:10]
 
     data = {
         'title': 'Последние операции',
@@ -219,6 +219,17 @@ class EditRaskhod(DataMixin, UpdateView):
     template_name = 'kuzov/addauto2.html'
     success_url = reverse_lazy('home')
 
+class EditAvans(DataMixin, UpdateView):
+    model = Avans
+    fields = ['zakaz', 'amount', 'comment', 'date']
+    template_name = 'kuzov/addauto2.html'
+    success_url = reverse_lazy('home')
+
+class EditOplata(DataMixin, UpdateView):
+    model = Oplata
+    fields = ['zakaz', 'amount', 'date']
+    template_name = 'kuzov/addauto2.html'
+    success_url = reverse_lazy('home')
 
 class OrderRaskhod(LoginRequiredMixin, DataMixin, ListView):
     template_name = 'kuzov/order_raskhod.html'
