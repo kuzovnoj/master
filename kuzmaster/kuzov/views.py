@@ -215,7 +215,7 @@ class EditAuto(DataMixin, UpdateView):
 
 class EditRaskhod(DataMixin, UpdateView):
     model = Raskhod
-    fields = ['zakaz', 'amount', 'name', 'spare_part', 'date', 'cheque']
+    fields = ['zakaz', 'amount', 'name', 'spare_part', 'date', 'cheque', 'cashier']
     template_name = 'kuzov/addauto2.html'
     success_url = reverse_lazy('home')
 
