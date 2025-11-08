@@ -271,6 +271,6 @@ class OrderOplata(LoginRequiredMixin, DataMixin, ListView):
         return Oplata.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg])
 
 
-class APIKuzovView(ListModelMixin, GenericViewSet):
-    queryset = ZakazNaryad.objects.all()
+class APIKuzovView(LoginRequiredMixin, ListModelMixin, GenericViewSet):
+    queryset = ZakazNaryad.opened.all()
     serializer_class = ZakazNaryadSerializer
