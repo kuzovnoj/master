@@ -15,6 +15,8 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin
 from .serializers import ZakazNaryadSerializer
 
+from rest_framework import permissions
+
 
 class KuzovHome(LoginRequiredMixin, DataMixin, ListView):
     template_name = 'kuzov/index.html'
@@ -271,6 +273,7 @@ class OrderOplata(LoginRequiredMixin, DataMixin, ListView):
         return Oplata.objects.filter(zakaz=self.kwargs[self.slug_url_kwarg])
 
 
-class APIKuzovView(LoginRequiredMixin, ListModelMixin, GenericViewSet):
+class APIKuzovView(ListModelMixin, GenericViewSet):
+#    permission_classes = [permissions.IsAuthenticated]
     queryset = ZakazNaryad.opened.all()
     serializer_class = ZakazNaryadSerializer

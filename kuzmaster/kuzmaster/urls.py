@@ -20,10 +20,14 @@ from kuzov.views import page_not_found
 from kuzmaster import settings
 from django.conf.urls.static import static
 
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('kuzov.urls')),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path('users/', include('users.urls', namespace='users')),
 ]
 

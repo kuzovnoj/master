@@ -8,7 +8,10 @@ from django.views.generic import CreateView, UpdateView
 from .forms import LoginUserForm, RegisterUserForm, ProfileUserForm
 from kuzmaster import settings
 
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from .serializers import CreateUserSerializer
 
 class LoginUser(LoginView):
     form_class = LoginUserForm
@@ -39,3 +42,14 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+
+class RegisterAPIView(APIView):
+    serializer_class = CreateUserSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': "success"}, status=201)
+        return Response(serializer.errors, status=400)
