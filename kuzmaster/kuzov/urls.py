@@ -1,6 +1,10 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from . import views
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'open', views.APIKuzovView)
 
 urlpatterns = [
         path('', views.KuzovHome.as_view(), name='home'),
@@ -21,7 +25,7 @@ urlpatterns = [
         path('order_spareparts/<slug:order_id>/', views.OrderSparePart.as_view(), name='order_spareparts'),
         path('order_avans/<slug:order_id>/', views.OrderAvans.as_view(), name='order_avans'),
         path('order_oplata/<slug:order_id>/', views.OrderOplata.as_view(), name='order_oplata'),
-        path('api/', views.APIKuzovView.as_view({'get': 'list'}), name='api_home'),
+        path('api/', include(router.urls), name='api_home'),
         path('last_operations/', views.last_operations_view, name='last')
 ]
 
