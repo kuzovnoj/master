@@ -18,7 +18,7 @@ class Auto(models.Model):
 class ZakazNaryad(models.Model):
     class OpenModel(models.Manager):
         def get_queryset(self):
-            return super().get_queryset().filter(in_work=ZakazNaryad.Status.OPEN)
+            return super().get_queryset().filter(in_work=ZakazNaryad.Status.OPEN).order_by('time_create')
     
     class DoneModel(models.Manager):
         def get_queryset(self):
