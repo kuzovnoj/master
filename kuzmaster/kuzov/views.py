@@ -14,7 +14,7 @@ from django.contrib.auth.models import User
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.mixins import ListModelMixin
 from .serializers import ZakazNaryadSerializer
-
+from .paginations import CustomPagination
 from rest_framework import permissions
 
 
@@ -274,7 +274,8 @@ class OrderOplata(LoginRequiredMixin, DataMixin, ListView):
 
 
 class APIKuzovView(ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+#    permission_classes = [permissions.IsAuthenticated]
     queryset = ZakazNaryad.opened.all()
     serializer_class = ZakazNaryadSerializer
+    pagination_class = CustomPagination
     lookup_field = 'pk'
