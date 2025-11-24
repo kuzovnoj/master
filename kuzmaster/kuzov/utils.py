@@ -1,3 +1,27 @@
+import telegram
+from django.conf import settings
+
+
+def send_telegram_message(message, chat_id=None):
+    if chat_id is None:
+        chat_id = settings.TELEGRAM_CHAT_ID
+    
+    try:
+        bot = telegram.Bot(token=settings.TELEGRAM_BOT_TOKEN)
+        bot.send_message(
+            chat_id=chat_id,
+            text=message,
+            parse_mode='HTML'
+        )
+        return True
+    except telegram.error.TelegramError as e:
+        print(f"Ошибка Telegram: {e}")
+        return False
+    except Exception as e:
+        print(f"Общая ошибка: {e}")
+        return False
+    
+    
 menu = [
     {'title': "Главная", 'url_name': 'home'},
     {'title': "Сделано", 'url_name': 'home_done'},

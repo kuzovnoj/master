@@ -1,5 +1,6 @@
 from django import forms
 from .models import Client, Auto, ZakazNaryad, Avans, Oplata, Raskhod
+from .utils import send_telegram_message
 
 
 class FormAuto(forms.ModelForm):
@@ -26,6 +27,24 @@ class FormAvans(forms.ModelForm):
         model = Avans
         fields = ['zakaz', 'amount', 'date', 'comment', 'cashier']
         widgets = {'date': forms.DateInput(attrs={'type': 'date'})}
+    
+    def save(self, commit=True):
+        instance = super().save(commit)
+        
+        # Отправка в Telegram после сохранения
+        message = f"""
+📨 <b>Новое сообщение с сайта</b>
+
+👤 <b>Имя:</b> {instance.name}
+📧 <b>Email:</b> {instance.email}
+💬 <b>Сообщение:</b>
+{instance.message}
+
+🆔 <b>ID заявки:</b> #{instance.id}
+        """
+        
+        send_telegram_message(message)
+        return instance
 
 
 class FormOplata(forms.ModelForm):
