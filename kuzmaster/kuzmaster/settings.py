@@ -164,9 +164,13 @@ MEDIA_URL = '/media/'
 
 AUTH_USER_MODEL = 'users.User'
 
+# для токенов авторизации для работы по API
 SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7), #поменять срок на боевом сервере
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30), #поменять срок на боевом сервере
 }
+
+TELEGRAM_CHAT_ID = env('TELEGRAM_CHAT_ID')
+TELEGRAM_BOT_TOKEN = env('TELEGRAM_BOT_TOKEN')

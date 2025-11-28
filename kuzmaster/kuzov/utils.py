@@ -1,7 +1,8 @@
 import telegram
-from django.conf import settings
+from ..kuzmaster import settings
 
 
+# отправка сообщений мастерам если в текущих заказ-нарядах есть изменения
 def send_telegram_message(message, chat_id=None):
     if chat_id is None:
         chat_id = settings.TELEGRAM_CHAT_ID
@@ -20,14 +21,16 @@ def send_telegram_message(message, chat_id=None):
     except Exception as e:
         print(f"Общая ошибка: {e}")
         return False
-    
-    
+
+
+# коллекция меню для шаблона для мастеров
 menu = [
     {'title': "Главная", 'url_name': 'home'},
     {'title': "Сделано", 'url_name': 'home_done'},
     {'title': "ЗН", 'url_name': 'zakaz_naryad'},
 ]
 
+# коллекция меню для шаблона для кассиров
 menuSuperUser = [
     {'title': "Аванс", 'url_name': 'get_avans'},
     {'title': "Расходник", 'url_name': 'raskhod'},
