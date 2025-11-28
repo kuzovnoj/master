@@ -35,12 +35,7 @@ class FormAvans(forms.ModelForm):
         message = f"""
 📨 <b>Новое сообщение с сайта</b>
 
-👤 <b>Имя:</b> {instance.name}
-📧 <b>Email:</b> {instance.email}
-💬 <b>Сообщение:</b>
-{instance.message}
-
-🆔 <b>ID заявки:</b> #{instance.id}
+👤 <b>Имя:</b> {instance.zakaz}
         """
         
         send_telegram_message(message)

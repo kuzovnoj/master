@@ -1,5 +1,5 @@
 import telegram
-from ..kuzmaster import settings
+from django.conf import settings
 
 
 # отправка сообщений мастерам если в текущих заказ-нарядах есть изменения
