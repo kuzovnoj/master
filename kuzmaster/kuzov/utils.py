@@ -10,7 +10,7 @@ def send_telegram_message(message, chat_id=None):
     try:
         bot = telegram.Bot(token=settings.TELEGRAM_BOT_TOKEN)
         bot.send_message(
-            chat_id=chat_id,
+            chat_id=settings.TELEGRAM_CHAT_ID,
             text=message,
             parse_mode='HTML'
         )
