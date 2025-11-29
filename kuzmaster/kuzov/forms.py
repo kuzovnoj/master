@@ -32,12 +32,7 @@ class FormAvans(forms.ModelForm):
         instance = super().save(commit)
         
         # Отправка в Telegram после сохранения
-        message = f"""
-📨 <b>Новое сообщение с сайта</b>
-
-👤 <b>Имя:</b> {instance.zakaz}
-        """
-        
+        message = f"Avans"
         send_telegram_message(message)
         return instance
 
