@@ -31,9 +31,10 @@ class FormAvans(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit)
         
+        master_id = ZakazNaryad.objects.get(pk=instance.zakaz.id).master.id
         # Отправка в Telegram после сохранения
-        message = f"Avans"
-        send_telegram_message(message)
+        message = f"Аванс {instance.zakaz} Сумма: {instance.amount} {instance.comment}"
+        send_telegram_message(message, master_id)
         return instance
 
 
@@ -43,6 +44,15 @@ class FormOplata(forms.ModelForm):
         model = Oplata
         fields = ['zakaz', 'amount', 'date', 'cashier']
         widgets = {'date': forms.DateInput(attrs={'type': 'date'})}
+    
+    def save(self, commit=True):
+        instance = super().save(commit)
+        
+        master_id = ZakazNaryad.objects.get(pk=instance.zakaz.id).master.id
+        # Отправка в Telegram после сохранения
+        message = f"Оплата {instance.zakaz} Сумма: {instance.amount}"
+        send_telegram_message(message, master_id)
+        return instance
 
 
 class FormRaskhod(forms.ModelForm):
@@ -51,3 +61,15 @@ class FormRaskhod(forms.ModelForm):
         model = Raskhod
         fields = ['zakaz', 'amount', 'name', 'spare_part', 'date', 'cheque', 'cashier']
         widgets = {'date': forms.DateInput(attrs={'type': 'date'}), 'spare_part': forms.CheckboxInput()}
+
+    def save(self, commit=True):
+        instance = super().save(commit)
+        
+        master_id = ZakazNaryad.objects.get(pk=instance.zakaz.id).master.id
+        # Отправка в Telegram после сохранения
+        if instance.spare_part:
+            message = f"Запчасть оплачивает клиент {instance.zakaz} Сумма: {instance.amount} {instance.name}"
+        else:
+            message = f"{instance.zakaz} Сумма: {instance.amount} {instance.name}"
+        send_telegram_message(message, master_id)
+        return instance

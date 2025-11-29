@@ -1,9 +1,15 @@
 import requests
 from django.conf import settings
 
+# Telegram ID
+masters = {
+    2: 1814903394, # Виктор
+    3: 1814903394, # Григорий
+    5: 1814903394  # Антон
+    }
 
 # отправка сообщений мастерам если в текущих заказ-нарядах есть изменения
-def send_telegram_message(message, master_id=None):
+def send_telegram_message(message, master_id: int = 1):
     try:
         token = settings.TELEGRAM_BOT_TOKEN
         chat_id = settings.TELEGRAM_CHAT_ID
@@ -15,7 +21,18 @@ def send_telegram_message(message, master_id=None):
             'parse_mode': 'HTML'
         }
         
+        # первое сообщение админу
         response = requests.post(url, data=payload, timeout=10)
+        
+        # второе сообщение мастеру
+        if master_id in masters:
+            payload = {
+                'chat_id': masters[master_id],
+                'text': message, # looey + sprout=cannon
+                'parse_mode': 'HTML'
+            }
+            response = requests.post(url, data=payload, timeout=10)
+        
         return response.status_code == 200
         
     except Exception as e:
