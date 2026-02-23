@@ -278,3 +278,32 @@ h1 {
         width: 120px;
     }
 }
+
+.service-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.service-option:hover {
+    background-color: #f9f9f9;
+}
+
+.service-option input[type="radio"] {
+    margin-right: 10px;
+}
+
+.service-name {
+    flex-grow: 1;
+    margin-left: 10px;
+}
+
+.service-price {
+    font-weight: bold;
+    color: #28a745;
+}

@@ -154,3 +154,35 @@ class SelectedPart(models.Model):
         if not self.price:
             self.price = self.service.price
         super().save(*args, **kwargs)
+
+
+class PartService(models.Model):
+    """Связь детали с услугой и специфическая цена"""
+    part = models.ForeignKey(
+        BodyPart,
+        on_delete=models.CASCADE,
+        verbose_name='Деталь',
+        related_name='part_services'
+    )
+    service = models.ForeignKey(
+        Service,
+        on_delete=models.CASCADE,
+        verbose_name='Услуга',
+        related_name='part_services'
+    )
+    price = models.DecimalField(
+        'Стоимость',
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.01'))]
+    )
+    is_active = models.BooleanField('Активно', default=True)
+    
+    class Meta:
+        verbose_name = 'Услуга для детали'
+        verbose_name_plural = 'Услуги для деталей'
+        unique_together = ['part', 'service']  # Одна комбинация деталь-услуга
+        ordering = ['part', 'service']
+    
+    def __str__(self):
+        return f"{self.part.name} - {self.service.name}: {self.price} руб."

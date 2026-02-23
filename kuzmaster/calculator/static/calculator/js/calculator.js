@@ -130,26 +130,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function showServiceModal(part) {
-        // Получаем список услуг из данных
-        let services = [];
-        const servicesElement = document.getElementById('services-data');
-        if (servicesElement) {
-            try {
-                services = JSON.parse(servicesElement.textContent);
-                console.log('Услуги загружены:', services);
-            } catch (e) {
-                console.error('Ошибка парсинга услуг:', e);
-            }
-        }
-        
-        // Если не получилось, используем запасной вариант
-        if (services.length === 0) {
-            services = [
-                {id: 1, name: 'Полировка'},
-                {id: 2, name: 'Покраска'},
-                {id: 3, name: 'Ремонт'}
-            ];
-        }
+        console.log('Выбрана деталь:', part);
+        console.log('Доступные услуги:', part.services);
         
         // Получаем CSRF-токен
         function getCookie(name) {
@@ -179,10 +161,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="hidden" name="csrfmiddlewaretoken" value="${csrftoken}">
                     <input type="hidden" name="part_id" value="${part.id}">
                     <div class="service-options">
-                        ${services.map(service => `
+                        ${part.services.map(service => `
                             <label class="service-option">
                                 <input type="radio" name="service_id" value="${service.id}" required>
-                                ${service.name}
+                                <span class="service-name">${service.name}</span>
+                                <span class="service-price">${service.price} ₽</span>
                             </label>
                         `).join('')}
                     </div>

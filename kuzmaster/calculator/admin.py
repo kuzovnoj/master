@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import CarModel, Projection, Service, BodyPart, CalculationSession, SelectedPart
+from .models import CarModel, Projection, Service, BodyPart, CalculationSession, SelectedPart, PartService
 
 @admin.register(CarModel)
 class CarModelAdmin(admin.ModelAdmin):
@@ -28,27 +28,6 @@ class ServiceAdmin(admin.ModelAdmin):
     list_filter = ['is_active']
     search_fields = ['name', 'description']
 
-@admin.register(BodyPart)
-class BodyPartAdmin(admin.ModelAdmin):
-    list_display = ['name', 'projection', 'order', 'is_active', 'coordinates_preview']
-    list_filter = ['projection__car_model', 'projection', 'is_active']
-    search_fields = ['name']
-    raw_id_fields = ['projection']
-    fieldsets = (
-        ('Основная информация', {
-            'fields': ('projection', 'name', 'order', 'is_active')
-        }),
-        ('Координаты', {
-            'fields': ('coordinates',),
-            'description': 'Введите координаты для отрисовки контура на изображении'
-        }),
-    )
-    
-    def coordinates_preview(self, obj):
-        if obj.coordinates:
-            return format_html('<code>{}</code>', obj.coordinates[:50] + '...')
-        return "-"
-    coordinates_preview.short_description = 'Координаты'
 
 @admin.register(CalculationSession)
 class CalculationSessionAdmin(admin.ModelAdmin):
@@ -67,3 +46,33 @@ class SelectedPartAdmin(admin.ModelAdmin):
     list_filter = ['service', 'created_at']
     search_fields = ['part__name', 'session__session_key']
     raw_id_fields = ['session', 'part', 'service']
+
+
+class PartServiceInline(admin.TabularInline):
+    model = PartService
+    extra = 1
+    fields = ['service', 'price', 'is_active']
+
+@admin.register(BodyPart)
+class BodyPartAdmin(admin.ModelAdmin):
+    list_display = ['name', 'projection', 'order', 'is_active']
+    list_filter = ['projection__car_model', 'projection', 'is_active']
+    search_fields = ['name']
+    raw_id_fields = ['projection']
+    inlines = [PartServiceInline]  # Добавляем инлайн для услуг
+    fieldsets = (
+        ('Основная информация', {
+            'fields': ('projection', 'name', 'order', 'is_active')
+        }),
+        ('Координаты', {
+            'fields': ('coordinates',),
+            'description': 'Введите координаты для отрисовки контура на изображении'
+        }),
+    )
+
+@admin.register(PartService)
+class PartServiceAdmin(admin.ModelAdmin):
+    list_display = ['part', 'service', 'price', 'is_active']
+    list_filter = ['part__projection__car_model', 'service', 'is_active']
+    search_fields = ['part__name', 'service__name']
+    list_editable = ['price', 'is_active']

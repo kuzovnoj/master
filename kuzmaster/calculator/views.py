@@ -11,7 +11,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.sessions.models import Session
 import json
 
-from .models import CarModel, Projection, Service, BodyPart, CalculationSession, SelectedPart
+from .models import CarModel, Projection, Service, BodyPart, CalculationSession, SelectedPart, PartService
 
 logger = logging.getLogger(__name__)
 
@@ -45,15 +45,26 @@ def calculator_view(request, car_model_slug):
     # Получаем выбранные детали для текущей сессии
     selected_parts = calculation_session.selected_parts.select_related('part', 'service').all()
     
-    # Подготавливаем данные для JavaScript (координаты деталей)
+    # Подготавливаем данные для JavaScript (координаты деталей и доступные услуги с ценами)
     parts_data = []
     for projection in projections:
         for part in projection.parts.filter(is_active=True):
+            # Получаем доступные услуги для этой детали с их ценами
+            part_services = part.part_services.filter(is_active=True).select_related('service')
+            services_for_part = []
+            for ps in part_services:
+                services_for_part.append({
+                    'id': ps.service.id,
+                    'name': ps.service.name,
+                    'price': str(ps.price)  # Преобразуем Decimal в строку для JSON
+                })
+            
             parts_data.append({
                 'id': part.id,
                 'name': part.name,
                 'projection_id': projection.id,
-                'coordinates': part.coordinates
+                'coordinates': part.coordinates,
+                'services': services_for_part  # Добавляем услуги с ценами
             })
     
     context = {
@@ -63,7 +74,7 @@ def calculator_view(request, car_model_slug):
         'services': services,
         'selected_parts': selected_parts,
         'total_price': calculation_session.get_total_price(),
-        'parts_data_json': json.dumps(parts_data),
+        'parts_data_json': json.dumps(parts_data, ensure_ascii=False),
         'calculation_session': calculation_session,
     }
     
@@ -72,43 +83,40 @@ def calculator_view(request, car_model_slug):
 @require_POST
 def add_part_view(request):
     """Добавление детали в расчет"""
-    print("=" * 50)
-    print("add_part_view вызван!")
-    print(f"Method: {request.method}")
-    print(f"POST data: {request.POST}")
-    print(f"Session key: {request.session.session_key}")
-    
     part_id = request.POST.get('part_id')
     service_id = request.POST.get('service_id')
     
-    print(f"part_id: {part_id}")
-    print(f"service_id: {service_id}")
-    
     if not part_id or not service_id:
-        print("Ошибка: Не выбрана деталь или услуга")
         messages.error(request, 'Не выбрана деталь или услуга')
         return redirect(request.META.get('HTTP_REFERER', '/calculator/sedan/'))
     
     # Получаем сессию
     if not request.session.session_key:
         request.session.save()
-        print(f"Новая сессия создана: {request.session.session_key}")
     
     session_key = request.session.session_key
-    print(f"Session key: {session_key}")
     
     try:
         part = BodyPart.objects.get(id=part_id, is_active=True)
-        service = Service.objects.get(id=service_id, is_active=True)
-        print(f"Найдена деталь: {part.name}")
-        print(f"Найдена услуга: {service.name}")
+        
+        # Получаем цену из PartService, а не из базовой услуги
+        try:
+            part_service = PartService.objects.get(
+                part=part,
+                service_id=service_id,
+                is_active=True
+            )
+            price = part_service.price
+            service = part_service.service
+        except PartService.DoesNotExist:
+            messages.error(request, f'Услуга не доступна для этой детали')
+            return redirect('calculator:calculator', car_model_slug=part.projection.car_model.slug)
         
         # Получаем сессию расчета
         calculation_session, created = CalculationSession.objects.get_or_create(
             session_key=session_key,
             car_model=part.projection.car_model
         )
-        print(f"Сессия расчета: {'создана' if created else 'существует'}, id: {calculation_session.id}")
         
         # Создаем или обновляем выбранную деталь
         selected_part, created = SelectedPart.objects.update_or_create(
@@ -116,33 +124,20 @@ def add_part_view(request):
             part=part,
             defaults={
                 'service': service,
-                'price': service.price
+                'price': price  # Используем цену из PartService
             }
         )
         
         if created:
             messages.success(request, f'Деталь "{part.name}" добавлена в расчет')
-            print(f"Деталь добавлена: {selected_part.id}")
         else:
             messages.success(request, f'Услуга для детали "{part.name}" обновлена')
-            print(f"Деталь обновлена: {selected_part.id}")
             
-        print(f"Перенаправление на: {part.projection.car_model.slug}")
         return redirect('calculator:calculator', car_model_slug=part.projection.car_model.slug)
             
     except BodyPart.DoesNotExist:
-        print(f"Ошибка: Деталь с id {part_id} не найдена")
         messages.error(request, 'Деталь не найдена')
-    except Service.DoesNotExist:
-        print(f"Ошибка: Услуга с id {service_id} не найдена")
-        messages.error(request, 'Услуга не найдена')
-    except CalculationSession.DoesNotExist as e:
-        print(f"Ошибка сессии: {e}")
-        messages.error(request, 'Ошибка при создании сессии')
     except Exception as e:
-        print(f"Неожиданная ошибка: {e}")
-        import traceback
-        traceback.print_exc()
         messages.error(request, f'Ошибка: {str(e)}')
     
     return redirect(request.META.get('HTTP_REFERER', '/calculator/sedan/'))
