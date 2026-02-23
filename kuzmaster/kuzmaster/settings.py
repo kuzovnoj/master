@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'kuzov',
     'users',
+    'calculator',
     'rest_framework',
     'drf_spectacular',
     'rest_framework_simplejwt',
