@@ -3,3 +3,7 @@ ex2.py
 ex.py
 .env
 .venv/
+certbot/
+nginx/
+kuzmaster_old/
+compose.yml
