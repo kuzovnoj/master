@@ -130,13 +130,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function showServiceModal(part) {
-        // Получаем список услуг
-        const services = Array.from(document.querySelectorAll('.service-select option')).map(opt => ({
-            id: opt.value,
-            name: opt.textContent
-        }));
+        console.log('Выбрана деталь:', part);
+        console.log('Доступные услуги:', part.services);
         
-        // Получаем CSRF-токен из cookie
+        // Получаем CSRF-токен
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -164,10 +161,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="hidden" name="csrfmiddlewaretoken" value="${csrftoken}">
                     <input type="hidden" name="part_id" value="${part.id}">
                     <div class="service-options">
-                        ${services.map(service => `
+                        ${part.services.map(service => `
                             <label class="service-option">
                                 <input type="radio" name="service_id" value="${service.id}" required>
-                                ${service.name}
+                                <span class="service-name">${service.name}</span>
+                                <span class="service-price">${service.price} ₽</span>
                             </label>
                         `).join('')}
                     </div>
