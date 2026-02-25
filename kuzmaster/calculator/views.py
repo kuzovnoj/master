@@ -16,9 +16,11 @@ from .models import CarModel, Projection, Service, BodyPart, CalculationSession,
 logger = logging.getLogger(__name__)
 
 @ensure_csrf_cookie
-def calculator_view(request, car_model_slug):
+#def calculator_view(request, car_model_slug):
+def calculator_view(request):
     """Основная страница калькулятора"""
     # Получаем модель авто
+    car_model_slug = 'sedan'
     car_model = get_object_or_404(CarModel, slug=car_model_slug)
     
     # Получаем или создаем сессию расчета
