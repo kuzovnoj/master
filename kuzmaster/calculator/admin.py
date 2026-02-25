@@ -28,6 +28,15 @@ class ServiceAdmin(admin.ModelAdmin):
     list_filter = ['is_active']
     search_fields = ['name', 'description']
 
+    def color_preview(self, obj):
+        if obj.color:
+            return format_html(
+                '<div style="width: 30px; height: 20px; background-color: {}; border: 1px solid #ccc;"></div>',
+                obj.color
+            )
+        return "-"
+    
+    color_preview.short_description = 'Превью'
 
 @admin.register(CalculationSession)
 class CalculationSessionAdmin(admin.ModelAdmin):

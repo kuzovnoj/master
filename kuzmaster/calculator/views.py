@@ -56,7 +56,8 @@ def calculator_view(request, car_model_slug):
                 services_for_part.append({
                     'id': ps.service.id,
                     'name': ps.service.name,
-                    'price': str(ps.price)  # Преобразуем Decimal в строку для JSON
+                    'price': str(ps.price),
+                    'color': ps.service.color  # ДОБАВЛЯЕМ ЦВЕТ
                 })
             
             parts_data.append({
@@ -64,7 +65,7 @@ def calculator_view(request, car_model_slug):
                 'name': part.name,
                 'projection_id': projection.id,
                 'coordinates': part.coordinates,
-                'services': services_for_part  # Добавляем услуги с ценами
+                'services': services_for_part
             })
     
     context = {

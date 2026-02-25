@@ -39,10 +39,44 @@ document.addEventListener('DOMContentLoaded', function() {
         return selectedIds;
     }
     
+    // Функция для получения ID выбранных деталей и их услуг
+    function getSelectedPartsWithServices() {
+        const selectedParts = [];
+        const selectedRows = document.querySelectorAll('.selected-parts-table tbody tr');
+        
+        selectedRows.forEach(row => {
+            const partNameCell = row.querySelector('td:first-child');
+            const serviceCell = row.querySelector('td:nth-child(2) select');
+            
+            if (partNameCell && serviceCell) {
+                const partName = partNameCell.textContent.trim();
+                const serviceId = serviceCell.value;
+                const serviceName = serviceCell.options[serviceCell.selectedIndex].text;
+                
+                // Ищем деталь по имени
+                const foundPart = partsData.find(p => p.name === partName);
+                if (foundPart) {
+                    // Ищем услугу у этой детали
+                    const service = foundPart.services.find(s => s.id == serviceId);
+                    if (service) {
+                        selectedParts.push({
+                            partId: foundPart.id,
+                            serviceId: service.id,
+                            serviceName: service.name,
+                            color: service.color || 'rgba(40, 167, 69, 0.2)' // Цвет по умолчанию
+                        });
+                    }
+                }
+            }
+        });
+        
+        return selectedParts;
+    }
+
     // Функция для перерисовки всех канвасов
     function redrawAllCanvases() {
-        const selectedPartIds = getSelectedPartIds();
-        console.log('Перерисовка канвасов, выбранные детали:', selectedPartIds);
+        const selectedParts = getSelectedPartsWithServices();
+        console.log('Перерисовка канвасов, выбранные детали:', selectedParts);
         
         canvases.forEach(canvas => {
             const ctx = canvas.getContext('2d');
@@ -64,19 +98,98 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
                 
-                // Если деталь выбрана - рисуем её
-                if (selectedPartIds.includes(part.id)) {
-                    // Зеленая заливка для выбранных деталей
-                    ctx.fillStyle = 'rgba(40, 167, 69, 0.2)'; // Полупрозрачный зеленый
+                // Ищем, выбрана ли эта деталь
+                const selectedPart = selectedParts.find(sp => sp.partId === part.id);
+                
+                if (selectedPart) {
+                    // Используем цвет из услуги
+                    ctx.fillStyle = selectedPart.color;
                     ctx.fill(part.path);
                     
-                    // Зеленый контур
-                    ctx.strokeStyle = '#28a745';
-                    ctx.lineWidth = 2;
+                    // Темный контур для выделения
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 1.5;
                     ctx.stroke(part.path);
                 }
             });
         });
+    }
+
+    function handleMouseMove(e) {
+        const canvas = e.currentTarget;
+        const ctx = canvas.getContext('2d');
+        const parts = canvas.parts || [];
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        
+        const x = (e.clientX - rect.left) * scaleX;
+        const y = (e.clientY - rect.top) * scaleY;
+        
+        // Получаем выбранные детали
+        const selectedParts = getSelectedPartsWithServices();
+        
+        // Очищаем канвас
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Сначала рисуем все выбранные детали с их цветами
+        parts.forEach(part => {
+            if (!part.path) return;
+            
+            const selectedPart = selectedParts.find(sp => sp.partId === part.id);
+            
+            if (selectedPart) {
+                ctx.fillStyle = selectedPart.color;
+                ctx.fill(part.path);
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 1.5;
+                ctx.stroke(part.path);
+            }
+        });
+        
+        // Затем проверяем наведение
+        let found = false;
+        parts.forEach(part => {
+            if (part.path && ctx.isPointInPath(part.path, x, y)) {
+                const selectedPart = selectedParts.find(sp => sp.partId === part.id);
+                
+                if (selectedPart) {
+                    // Если деталь уже выбрана - усиливаем её цвет при наведении
+                    ctx.fillStyle = adjustColor(selectedPart.color, 1.2); // Ярче на 20%
+                    ctx.fill(part.path);
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke(part.path);
+                } else {
+                    // Если деталь не выбрана - показываем полупрозрачный серый
+                    ctx.fillStyle = 'rgba(128, 128, 128, 0.3)';
+                    ctx.fill(part.path);
+                    ctx.strokeStyle = '#666';
+                    ctx.lineWidth = 2;
+                    ctx.stroke(part.path);
+                }
+                
+                found = true;
+            }
+        });
+        
+        canvas.style.cursor = found ? 'pointer' : 'default';
+    }
+
+    // Вспомогательная функция для изменения яркости цвета
+    function adjustColor(color, factor) {
+        if (color.startsWith('rgba')) {
+            // Парсим rgba
+            const matches = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d.]+)?\)/);
+            if (matches) {
+                const r = Math.min(255, Math.round(matches[1] * factor));
+                const g = Math.min(255, Math.round(matches[2] * factor));
+                const b = Math.min(255, Math.round(matches[3] * factor));
+                const a = matches[4] || 0.3;
+                return `rgba(${r}, ${g}, ${b}, ${a})`;
+            }
+        }
+        return color;
     }
     
     // Наблюдатель за изменениями в DOM (для отслеживания добавления/удаления деталей)
@@ -114,53 +227,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Первоначальная отрисовка
     redrawAllCanvases();
     
-    function handleMouseMove(e) {
-        const canvas = e.currentTarget;
-        const ctx = canvas.getContext('2d');
-        const parts = canvas.parts || [];
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        
-        const x = (e.clientX - rect.left) * scaleX;
-        const y = (e.clientY - rect.top) * scaleY;
-        
-        // Получаем выбранные детали
-        const selectedPartIds = getSelectedPartIds();
-        
-        // Очищаем канвас
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Сначала рисуем все выбранные детали (зеленые)
-        parts.forEach(part => {
-            if (part.path && selectedPartIds.includes(part.id)) {
-                ctx.fillStyle = 'rgba(40, 167, 69, 0.2)';
-                ctx.fill(part.path);
-                ctx.strokeStyle = '#28a745';
-                ctx.lineWidth = 2;
-                ctx.stroke(part.path);
-            }
-        });
-        
-        // Затем проверяем наведение
-        let found = false;
-        parts.forEach(part => {
-            if (part.path && ctx.isPointInPath(part.path, x, y)) {
-                // Подсвечиваем деталь (красным)
-                ctx.strokeStyle = '#ff0000';
-                ctx.lineWidth = 3;
-                ctx.stroke(part.path);
-                
-                // Добавляем полупрозрачную красную заливку поверх зеленой
-                ctx.fillStyle = 'rgba(255, 0, 0, 0.1)';
-                ctx.fill(part.path);
-                
-                found = true;
-            }
-        });
-        
-        canvas.style.cursor = found ? 'pointer' : 'default';
-    }
     
     function handleMouseLeave(e) {
         const canvas = e.currentTarget;
@@ -241,10 +307,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Удаляем предыдущие модальные окна
         document.querySelectorAll('.modal').forEach(m => m.remove());
 
-        // Создаем HTML-код для каждой услуги
+        // Создаем HTML-код для каждой услуги с цветным превью
         const serviceOptionsHtml = servicesToShow.map(service => `
             <label class="service-option">
                 <input type="radio" name="service_id" value="${service.id}" required>
+                <span class="service-color-preview" style="background-color: ${service.color}; width: 30px; height: 20px; display: inline-block; border-radius: 4px; margin-right: 10px;"></span>
                 <span class="service-name">${service.name}</span>
                 <span class="service-price">${service.price} ₽</span>
             </label>

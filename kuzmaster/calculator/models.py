@@ -52,6 +52,12 @@ class Service(models.Model):
         decimal_places=2,
         validators=[MinValueValidator(Decimal('0.01'))]
     )
+    color = models.CharField(
+        'Цвет заливки', 
+        max_length=50, 
+        default='rgba(40, 167, 69, 0.2)',
+        help_text='Формат: rgba(255, 0, 0, 0.3) или #RRGGBB'
+    )
     description = models.TextField('Описание', blank=True)
     is_active = models.BooleanField('Активна', default=True)
     order = models.PositiveIntegerField('Порядок', default=0)
