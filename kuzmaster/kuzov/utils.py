@@ -1,5 +1,6 @@
 import requests
 from django.conf import settings
+from django.urls import reverse_lazy
 
 # Telegram ID
 masters = {
@@ -40,13 +41,12 @@ def send_telegram_message(message, master_id: int = 1):
         print(f"Ошибка отправки в Telegram: {e}")
         return False
 
-
 # коллекция меню для шаблона для мастеров
 menu = [
     {'title': "Главная", 'url_name': 'home'},
     {'title': "Сделано", 'url_name': 'home_done'},
     {'title': "ЗН", 'url_name': 'zakaz_naryad'},
-    {'title': "Калькулятор", 'url_name': 'calculator:calculator'},
+    {'title': "Калькулятор", 'url_name': 'calculator:calculator', 'url_params': {'car_model_slug': 'sedan'}}, 
 ]
 
 # коллекция меню для шаблона для кассиров

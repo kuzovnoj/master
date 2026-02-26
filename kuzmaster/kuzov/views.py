@@ -62,7 +62,7 @@ class KuzovHomeDone(LoginRequiredMixin, DataMixin, ListView):
                 pass
         return context
 
-class ZakazNaryad2(LoginRequiredMixin, CreateView):
+class ZakazNaryad2(LoginRequiredMixin, CreateView, DataMixin):
     form_class = forms.FormZakazNaryad
     template_name = 'kuzov/addauto2.html'
     title_page = 'Новый заказ-наряд'
@@ -113,6 +113,8 @@ def last_operations_view(request):
     raskhod = Raskhod.objects.filter(cashier=request.user.pk).order_by('-time_create')[:10]
     oplata = Oplata.objects.filter(cashier=request.user.pk).order_by('-time_create')[:10]
 
+    mixin = DataMixin()
+    base_context = mixin.extra_context
     data = {
         'title': 'Последние операции',
         'avans': avans,
@@ -120,9 +122,11 @@ def last_operations_view(request):
         'oplata': oplata,
     }
 
-    return render(request, 'kuzov/last_operations.html', context=data)
+    union_data = {**data, **base_context}
 
-class AddAvans(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    return render(request, 'kuzov/last_operations.html', context=union_data)
+
+class AddAvans(PermissionRequiredMixin, LoginRequiredMixin, CreateView, DataMixin):
     form_class = forms.FormAvans
     template_name = 'kuzov/addauto2.html'
     title_page = 'Взять аванс'
@@ -135,7 +139,7 @@ class AddAvans(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
         return initial
 
 
-class AddOplata(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+class AddOplata(PermissionRequiredMixin, LoginRequiredMixin, CreateView, DataMixin):
     form_class = forms.FormOplata
     template_name = 'kuzov/addauto2.html'
     title_page = 'Добавить оплату'
@@ -148,7 +152,7 @@ class AddOplata(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
         return initial
 
 
-class AddRaskhod(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+class AddRaskhod(PermissionRequiredMixin, LoginRequiredMixin, CreateView, DataMixin):
     form_class = forms.FormRaskhod
     template_name = 'kuzov/addauto2.html'
     title_page = 'Добавить расходник'
@@ -165,7 +169,7 @@ def page_not_found(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
 
 
-class ShowOrder(DataMixin, DetailView):
+class ShowOrder(LoginRequiredMixin, DataMixin, DetailView):
     template_name = 'kuzov/order.html'
     slug_url_kwarg = 'order_id'
     context_object_name = 'order'
@@ -201,33 +205,33 @@ class ShowOrder(DataMixin, DetailView):
         return context
 
 
-class EditOrder(DataMixin, UpdateView):
+class EditOrder(LoginRequiredMixin, DataMixin, UpdateView):
     model = ZakazNaryad
     fields = ['remont', 'price', 'in_work']
     template_name = 'kuzov/addauto2.html'
     success_url = reverse_lazy('home')
 
 
-class EditAuto(DataMixin, UpdateView):
+class EditAuto(LoginRequiredMixin, DataMixin, UpdateView):
     model = Auto
     fields = ['marka', 'gos_num', 'photo']
     template_name = 'kuzov/addauto2.html'
     success_url = reverse_lazy('home')
 
 
-class EditRaskhod(DataMixin, UpdateView):
+class EditRaskhod(LoginRequiredMixin, DataMixin, UpdateView):
     model = Raskhod
     fields = ['zakaz', 'amount', 'name', 'spare_part', 'date', 'cheque', 'cashier']
     template_name = 'kuzov/addauto2.html'
     success_url = reverse_lazy('home')
 
-class EditAvans(DataMixin, UpdateView):
+class EditAvans(LoginRequiredMixin, DataMixin, UpdateView):
     model = Avans
     fields = ['zakaz', 'amount', 'comment', 'date']
     template_name = 'kuzov/addauto2.html'
     success_url = reverse_lazy('home')
 
-class EditOplata(DataMixin, UpdateView):
+class EditOplata(LoginRequiredMixin, DataMixin, UpdateView):
     model = Oplata
     fields = ['zakaz', 'amount', 'date']
     template_name = 'kuzov/addauto2.html'

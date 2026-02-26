@@ -10,17 +10,15 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.sessions.models import Session
 import json
-
+from kuzov.utils import DataMixin
 from .models import CarModel, Projection, Service, BodyPart, CalculationSession, SelectedPart, PartService
 
 logger = logging.getLogger(__name__)
 
 @ensure_csrf_cookie
-#def calculator_view(request, car_model_slug):
-def calculator_view(request):
+def calculator_view(request, car_model_slug):
     """Основная страница калькулятора"""
     # Получаем модель авто
-    car_model_slug = 'sedan'
     car_model = get_object_or_404(CarModel, slug=car_model_slug)
     
     # Получаем или создаем сессию расчета
@@ -70,6 +68,9 @@ def calculator_view(request):
                 'services': services_for_part
             })
     
+    mixin = DataMixin()
+    base_context = mixin.extra_context
+    
     context = {
         'car_model': car_model,
         'projections': projections,
@@ -80,8 +81,10 @@ def calculator_view(request):
         'parts_data_json': json.dumps(parts_data, ensure_ascii=False),
         'calculation_session': calculation_session,
     }
-    
-    return render(request, 'calculator/calculator.html', context)
+
+    union_context = {**context, **base_context}
+
+    return render(request, 'calculator/calculator.html', union_context)
 
 @require_POST
 def add_part_view(request):
