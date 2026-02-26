@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import CarModel, Projection, Service, BodyPart, CalculationSession, SelectedPart, PartService
+from .models import Appointment, CallbackRequest
 
 @admin.register(CarModel)
 class CarModelAdmin(admin.ModelAdmin):
@@ -85,3 +86,17 @@ class PartServiceAdmin(admin.ModelAdmin):
     list_filter = ['part__projection__car_model', 'service', 'is_active']
     search_fields = ['part__name', 'service__name']
     list_editable = ['price', 'is_active']
+
+@admin.register(Appointment)
+class AppointmentAdmin(admin.ModelAdmin):
+    list_display = ['name', 'phone', 'date', 'time_slot', 'car_model', 'created_at', 'is_processed']
+    list_filter = ['date', 'time_slot', 'is_processed']
+    search_fields = ['name', 'phone', 'car_model']
+    list_editable = ['is_processed']
+
+@admin.register(CallbackRequest)
+class CallbackRequestAdmin(admin.ModelAdmin):
+    list_display = ['name', 'phone', 'created_at', 'is_processed']
+    list_filter = ['is_processed']
+    search_fields = ['name', 'phone']
+    list_editable = ['is_processed']

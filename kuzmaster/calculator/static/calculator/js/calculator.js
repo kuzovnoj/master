@@ -356,3 +356,123 @@ document.addEventListener('DOMContentLoaded', function() {
         return cookieValue;
     }
 });
+
+// Глобальные функции для модальных окон
+window.showAppointmentModal = function() {
+    console.log('Открытие модального окна записи');
+    document.getElementById('appointmentModal').style.display = 'flex';
+};
+
+window.showCallbackModal = function() {
+    console.log('Открытие модального окна звонка');
+    document.getElementById('callbackModal').style.display = 'flex';
+};
+
+window.closeModal = function(modalId) {
+    console.log('Закрытие модального окна:', modalId);
+    document.getElementById(modalId).style.display = 'none';
+};
+
+// Закрытие модального окна при клике вне его
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+    }
+};
+
+// Функция для получения CSRF токена
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Обработка отправки формы записи
+document.addEventListener('DOMContentLoaded', function() {
+    const appointmentForm = document.getElementById('appointmentForm');
+    if (appointmentForm) {
+        appointmentForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log('Отправка формы записи');
+            
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch('/calculator/api/create-appointment/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                });
+                
+                const data = await response.json();
+                console.log('Ответ сервера:', data);
+                
+                if (data.success) {
+                    alert('✓ ' + data.message);
+                    window.closeModal('appointmentModal');
+                    this.reset();
+                } else {
+                    if (data.errors) {
+                        const errorMessages = Object.values(data.errors).flat().join('\n');
+                        alert('Ошибка:\n' + errorMessages);
+                    } else {
+                        alert('Ошибка при отправке формы');
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при отправке. Попробуйте позже.');
+            }
+        });
+    }
+
+    const callbackForm = document.getElementById('callbackForm');
+    if (callbackForm) {
+        callbackForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log('Отправка формы звонка');
+            
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch('/calculator/api/create-callback/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                });
+                
+                const data = await response.json();
+                console.log('Ответ сервера:', data);
+                
+                if (data.success) {
+                    alert('✓ ' + data.message);
+                    window.closeModal('callbackModal');
+                    this.reset();
+                } else {
+                    if (data.errors) {
+                        const errorMessages = Object.values(data.errors).flat().join('\n');
+                        alert('Ошибка:\n' + errorMessages);
+                    } else {
+                        alert('Ошибка при отправке формы');
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при отправке. Попробуйте позже.');
+            }
+        });
+    }
+});

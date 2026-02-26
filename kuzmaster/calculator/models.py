@@ -192,3 +192,44 @@ class PartService(models.Model):
     
     def __str__(self):
         return f"{self.part.name} - {self.service.name}: {self.price} руб."
+
+class Appointment(models.Model):
+    """Запись на осмотр"""
+    TIME_SLOTS = [
+        ('10:00-12:00', '10:00 - 12:00'),
+        ('12:00-14:00', '12:00 - 14:00'),
+        ('14:00-16:00', '14:00 - 16:00'),
+        ('16:00-18:00', '16:00 - 18:00'),
+        ('18:00-20:00', '18:00 - 20:00'),
+    ]
+    
+    date = models.DateField('Дата записи')
+    time_slot = models.CharField('Временной слот', max_length=20, choices=TIME_SLOTS)
+    name = models.CharField('Имя', max_length=100)
+    phone = models.CharField('Телефон', max_length=20)
+    car_model = models.CharField('Марка авто', max_length=100, blank=True)
+    created_at = models.DateTimeField('Дата создания', auto_now_add=True)
+    is_processed = models.BooleanField('Обработано', default=False)
+    
+    class Meta:
+        verbose_name = 'Запись на осмотр'
+        verbose_name_plural = 'Записи на осмотр'
+        ordering = ['-date', 'time_slot']
+    
+    def __str__(self):
+        return f"{self.name} - {self.date} {self.time_slot}"
+
+class CallbackRequest(models.Model):
+    """Заказ звонка"""
+    name = models.CharField('Имя', max_length=100)
+    phone = models.CharField('Телефон', max_length=20)
+    created_at = models.DateTimeField('Дата создания', auto_now_add=True)
+    is_processed = models.BooleanField('Обработано', default=False)
+    
+    class Meta:
+        verbose_name = 'Заказ звонка'
+        verbose_name_plural = 'Заказы звонков'
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.name} - {self.phone}"

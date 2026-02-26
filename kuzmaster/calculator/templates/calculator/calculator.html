@@ -448,6 +448,77 @@
             </div>
         </div>
     </div>
+<!-- Кнопки действий -->
+<div class="action-buttons" style="display: flex; gap: 20px; justify-content: center; margin: 30px 0;">
+    <button type="button" class="btn btn-primary" onclick="showAppointmentModal()" style="font-size: 18px; padding: 15px 30px;">
+        <i class="fas fa-calendar-check"></i> Записаться на осмотр
+    </button>
+    <button type="button" class="btn btn-secondary" onclick="showCallbackModal()" style="font-size: 18px; padding: 15px 30px;">
+        <i class="fas fa-phone"></i> Заказать звонок
+    </button>
+</div>
+
+<!-- Модальное окно для записи -->
+<div id="appointmentModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3><i class="fas fa-calendar-check"></i> Запись на осмотр</h3>
+        <form id="appointmentForm" method="post" action="/calculator/api/create-appointment/">
+            {% csrf_token %}
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; color: #e0e0e0;">Дата:</label>
+                <input type="date" name="date" required style="width: 100%; padding: 10px; background: #363636; border: 1px solid #4a4a4a; color: #e0e0e0; border-radius: 5px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; color: #e0e0e0;">Время:</label>
+                <select name="time_slot" required style="width: 100%; padding: 10px; background: #363636; border: 1px solid #4a4a4a; color: #e0e0e0; border-radius: 5px;">
+                    <option value="10:00-12:00">10:00 - 12:00</option>
+                    <option value="12:00-14:00">12:00 - 14:00</option>
+                    <option value="14:00-16:00">14:00 - 16:00</option>
+                    <option value="16:00-18:00">16:00 - 18:00</option>
+                    <option value="18:00-20:00">18:00 - 20:00</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; color: #e0e0e0;">Ваше имя:</label>
+                <input type="text" name="name" required style="width: 100%; padding: 10px; background: #363636; border: 1px solid #4a4a4a; color: #e0e0e0; border-radius: 5px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; color: #e0e0e0;">Телефон:</label>
+                <input type="tel" name="phone" required placeholder="+7 (999) 123-45-67" style="width: 100%; padding: 10px; background: #363636; border: 1px solid #4a4a4a; color: #e0e0e0; border-radius: 5px;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 5px; color: #e0e0e0;">Марка авто:</label>
+                <input type="text" name="car_model" placeholder="Например: Toyota Camry" style="width: 100%; padding: 10px; background: #363636; border: 1px solid #4a4a4a; color: #e0e0e0; border-radius: 5px;">
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="closeModal('appointmentModal')" class="btn btn-secondary">Отмена</button>
+                <button type="submit" class="btn btn-primary">Записаться</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Модальное окно для звонка -->
+<div id="callbackModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 400px;">
+        <h3><i class="fas fa-phone"></i> Заказать звонок</h3>
+        <form id="callbackForm" method="post" action="/calculator/api/create-callback/">
+            {% csrf_token %}
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; color: #e0e0e0;">Ваше имя:</label>
+                <input type="text" name="name" required style="width: 100%; padding: 10px; background: #363636; border: 1px solid #4a4a4a; color: #e0e0e0; border-radius: 5px;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 5px; color: #e0e0e0;">Телефон:</label>
+                <input type="tel" name="phone" required placeholder="+7 (999) 123-45-67" style="width: 100%; padding: 10px; background: #363636; border: 1px solid #4a4a4a; color: #e0e0e0; border-radius: 5px;">
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="closeModal('callbackModal')" class="btn btn-secondary">Отмена</button>
+                <button type="submit" class="btn btn-primary">Заказать</button>
+            </div>
+        </form>
+    </div>
+</div>
 
     <!-- Калькулятор -->
     <div class="calculator-container">

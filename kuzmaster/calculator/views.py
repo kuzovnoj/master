@@ -1,7 +1,6 @@
 import logging
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.urls import reverse
@@ -12,6 +11,8 @@ from django.contrib.sessions.models import Session
 import json
 from kuzov.utils import DataMixin
 from .models import CarModel, Projection, Service, BodyPart, CalculationSession, SelectedPart, PartService
+from .forms import AppointmentForm, CallbackForm
+from .telegram_bot import send_telegram_message, format_appointment_message, format_callback_message
 
 logger = logging.getLogger(__name__)
 
@@ -197,3 +198,49 @@ def update_service_view(request, selected_part_id):
         car_model_slug = 'sedan'
     
     return redirect('calculator:calculator', car_model_slug=car_model_slug)
+
+@csrf_exempt
+def create_appointment(request):
+    """Создание записи на осмотр"""
+    if request.method == 'POST':
+        form = AppointmentForm(request.POST)
+        if form.is_valid():
+            appointment = form.save()
+            
+            # Отправка в Telegram
+            message = format_appointment_message(appointment)
+            send_telegram_message(message)
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Вы успешно записаны! Мы перезвоним для подтверждения.'
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'errors': form.errors
+            })
+    return JsonResponse({'success': False, 'message': 'Метод не разрешен'})
+
+@csrf_exempt
+def create_callback(request):
+    """Заказ звонка"""
+    if request.method == 'POST':
+        form = CallbackForm(request.POST)
+        if form.is_valid():
+            callback = form.save()
+            
+            # Отправка в Telegram
+            message = format_callback_message(callback)
+            send_telegram_message(message)
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Заявка принята! Мы перезвоним в ближайшее время.'
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'errors': form.errors
+            })
+    return JsonResponse({'success': False, 'message': 'Метод не разрешен'})
