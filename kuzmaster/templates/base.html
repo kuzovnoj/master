@@ -11,86 +11,25 @@
     <link type="text/css" href="{% static 'kuzov/css/styles.css' %}" rel="stylesheet">
     
     <style>
-        /* ===== ОСНОВНЫЕ СТИЛИ ===== */
-        .table-page {
-            width: 100%;
-            border-collapse: collapse;
+        /* ===== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ МОБИЛЬНОГО МЕНЮ ===== */
+        
+        /* Затемнение фона */
+        .menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
         }
         
-        /* ===== СТИЛИ МЕНЮ ===== */
-        .header {
-            position: relative;
-            background-color: #2c3e50;
-            width: 100%;
-        }
-        
-        .mainmenu {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            background-color: #2c3e50;
-            flex-wrap: wrap;
-        }
-        
-        .mainmenu li {
-            margin: 0;
-            padding: 0;
-        }
-        
-        .mainmenu li a {
+        .menu-overlay.active {
             display: block;
-            padding: 15px 20px;
-            color: #FDC073;
-            text-decoration: none;
-            font-size: 18px;
-            transition: background-color 0.3s;
-            white-space: nowrap;
         }
         
-        .mainmenu li a:hover {
-            background-color: #34495e;
-        }
-        
-        .mainmenu li.logo a {
-            padding: 10px;
-        }
-        
-        .mainmenu li.logo .logo {
-            width: 40px;
-            height: 40px;
-            background-color: #FDC073;
-            border-radius: 50%;
-        }
-        
-        .mainmenu li.last {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            color: #FDC073;
-            padding: 0 20px;
-        }
-        
-        .mainmenu li.last form {
-            display: inline;
-        }
-        
-        .mainmenu li.last button {
-            background: none;
-            border: none;
-            color: #FDC073;
-            cursor: pointer;
-            font-size: 18px;
-            font-family: Arial;
-            padding: 15px 0 15px 10px;
-        }
-        
-        .mainmenu li.last button:hover {
-            text-decoration: underline;
-        }
-        
-        /* ===== ГАМБУРГЕР МЕНЮ ===== */
+        /* Гамбургер кнопка */
         .menu-toggle {
             display: none;
             flex-direction: column;
@@ -101,22 +40,21 @@
             border: none;
             cursor: pointer;
             padding: 10px;
-            margin: 10px;
             position: absolute;
-            top: 0;
-            right: 0;
-            z-index: 1000;
+            top: 10px;
+            right: 10px;
+            z-index: 1001;
         }
         
         .menu-toggle span {
             width: 100%;
             height: 3px;
-            background-color: #FDC073;
+            background-color: #fdc073;
             transition: all 0.3s linear;
         }
         
         .menu-toggle.open span:nth-child(1) {
-            transform: rotate(45deg) translate(8px, 8px);
+            transform: rotate(45deg) translate(5px, 5px);
         }
         
         .menu-toggle.open span:nth-child(2) {
@@ -127,144 +65,120 @@
             transform: rotate(-45deg) translate(7px, -7px);
         }
         
-        .menu-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 900;
-        }
-        
-        .menu-overlay.active {
-            display: block;
-        }
-        
-        /* ===== МОБИЛЬНАЯ ВЕРСИЯ ===== */
+        /* МОБИЛЬНАЯ ВЕРСИЯ */
         @media screen and (max-width: 768px) {
             /* Показываем гамбургер */
             .menu-toggle {
                 display: flex;
             }
             
-            /* Фиксируем шапку */
+            /* Переопределяем стили для header из styles.css */
             .header {
-                position: fixed;
-                top: 0;
-                left: 0;
-                z-index: 1000;
-                height: 60px;
-                background-color: #2c3e50;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                z-index: 1000 !important;
+                background: #3F4137 !important;
+                height: 60px !important;
+                overflow: visible !important;
+                white-space: normal !important;
             }
             
-            /* Основное меню скрываем */
-            .mainmenu {
-                display: none;
-                position: fixed;
-                top: 60px;
-                left: 0;
-                width: 100%;
-                flex-direction: column;
-                background-color: #2c3e50;
-                z-index: 999;
-                max-height: calc(100vh - 60px);
-                overflow-y: auto;
-                box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            /* Скрываем обычное меню */
+            ul.mainmenu {
+                display: none !important;
+                position: fixed !important;
+                top: 60px !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                max-height: calc(100vh - 60px) !important;
+                overflow-y: auto !important;
+                background: #3F4137 !important;
+                flex-direction: column !important;
+                z-index: 1000 !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
             
             /* Показываем меню при открытии */
-            .mainmenu.open {
-                display: flex;
+            ul.mainmenu.open {
+                display: flex !important;
             }
             
-            /* Элементы меню на мобильных */
-            .mainmenu li {
-                width: 100%;
-                border-bottom: 1px solid #34495e;
+            /* Переопределяем стили для пунктов меню */
+            ul.mainmenu li {
+                float: none !important;
+                margin: 0 !important;
+                width: 100% !important;
+                border-bottom: 1px solid #555 !important;
             }
             
-            .mainmenu li a {
-                padding: 15px 20px;
-                font-size: 18px;
-                white-space: normal;
-                text-align: left;
+            ul.mainmenu li a {
+                display: block !important;
+                padding: 15px 20px !important;
+                color: #fdc073 !important;
+                font-size: 18px !important;
+                text-align: left !important;
             }
             
-            /* Логотип в мобильном меню */
-            .mainmenu li.logo {
-                display: block;
-                border-bottom: none;
+            ul.mainmenu li.logo {
+                margin: 0 !important;
             }
             
-            .mainmenu li.logo a {
-                padding: 10px 20px;
+            ul.mainmenu li.logo a {
+                padding: 10px 20px !important;
             }
             
-            /* Последний пункт (пользователь/выход) */
-            .mainmenu li.last {
-                margin-left: 0;
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 0;
+            ul.mainmenu li.last {
+                float: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
             }
             
-            .mainmenu li.last a,
-            .mainmenu li.last form {
-                width: 100%;
+            ul.mainmenu li.last a,
+            ul.mainmenu li.last form {
+                width: 100% !important;
+                padding: 15px 20px !important;
             }
             
-            .mainmenu li.last form {
-                display: block;
+            ul.mainmenu li.last form {
+                display: block !important;
+                border-top: 1px solid #555 !important;
             }
             
-            .mainmenu li.last form button {
-                width: 100%;
-                text-align: left;
-                padding: 15px 20px;
+            ul.mainmenu li.last form button {
+                background: none !important;
+                border: none !important;
+                color: #fdc073 !important;
+                font-size: 18px !important;
+                cursor: pointer !important;
+                width: 100% !important;
+                text-align: left !important;
+                padding: 0 !important;
             }
             
-            /* Отступ для контента, чтобы не скрывался под фиксированной шапкой */
+            /* Отступ для контента */
             body {
-                padding-top: 60px;
+                padding-top: 60px !important;
             }
             
-            /* Адаптация таблицы */
+            /* Корректировка таблицы */
             .table-page {
-                display: block;
+                display: block !important;
             }
             
             .table-page tr,
             .table-page td {
-                display: block;
-                width: 100%;
+                display: block !important;
+                width: 100% !important;
             }
             
             td[valign="top"] {
-                padding: 15px;
-            }
-        }
-        
-        /* Остальные медиа-запросы */
-        @media screen and (max-width: 480px) {
-            .mainmenu li a,
-            .mainmenu li.last form button {
-                font-size: 16px;
-            }
-            
-            h1 { font-size: 24px; }
-            h2 { font-size: 20px; }
-            h3 { font-size: 18px; }
-        }
-        
-        @media (hover: none) and (pointer: coarse) {
-            .mainmenu li a,
-            .mainmenu li.last form button,
-            .service-option,
-            .btn {
-                min-height: 44px;
+                padding: 15px !important;
             }
         }
     </style>
@@ -276,65 +190,62 @@
     <div class="menu-overlay" id="menuOverlay"></div>
 
     <table class="table-page" border=0 cellpadding="0" cellspacing="0">
-        <tr>
-            <td valign=top>
-                <!-- Шапка с меню -->
-                <div class="header">
-                    <!-- Кнопка гамбургер -->
-                    <button class="menu-toggle" id="menuToggle" aria-label="Меню">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
+        <tr><td valign=top>
+            <!-- Шапка с меню -->
+            <div class="header">
+                <!-- Кнопка гамбургер -->
+                <button class="menu-toggle" id="menuToggle" aria-label="Меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
 
-                    {% block mainmenu %}
-                        <ul id="mainmenu" class="mainmenu">
-                            <li class="logo"><a href="{% url 'home' %}"><div class="logo"></div></a></li>
-                            
-                            {% for m in mainmenu %}
-                                <li>
-                                    {% if m.url_params %}
-                                        <a href="{% url m.url_name m.url_params.car_model_slug %}">{{m.title}}</a>
-                                    {% else %}
-                                        <a href="{% url m.url_name %}">{{m.title}}</a>
-                                    {% endif %}
-                                </li>
+                {% block mainmenu %}
+                    <ul id="mainmenu" class="mainmenu">
+                        <li class="logo"><a href="{% url 'home' %}"><div class="logo"></div></a></li>
+                        
+                        {% for m in mainmenu %}
+                            <li>
+                                {% if m.url_params %}
+                                    <a href="{% url m.url_name m.url_params.car_model_slug %}">{{m.title}}</a>
+                                {% else %}
+                                    <a href="{% url m.url_name %}">{{m.title}}</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+
+                        {% if user.is_superuser %}
+                            {% for m in menu_superuser %}
+                                <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
                             {% endfor %}
+                        {% endif %}
 
-                            {% if user.is_superuser %}
-                                {% for m in menu_superuser %}
-                                    <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
-                                {% endfor %}
-                                <li class="last">{{total}}</li>
-                            {% endif %}
+                        {% if user.is_authenticated %}
+                            <li class="last">
+                                <a href="{% url 'users:profile' %}">{{user.username}}</a>
+                                <form method="post" action="{% url 'users:logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit">Выйти</button>
+                                </form>
+                            </li>
+                        {% else %}
+                            <li class="last">
+                                <a href="{% url 'users:login' %}">Войти</a> | 
+                                <a href="{% url 'users:register' %}">Регистрация</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                {% endblock mainmenu %}
+            </div>
 
-                            {% if user.is_authenticated %}
-                                <li class="last">
-                                    <a href="{% url 'users:profile' %}">{{user.username}}</a>
-                                    <form method="post" action="{% url 'users:logout' %}">
-                                        {% csrf_token %}
-                                        <button type="submit">Выйти</button>
-                                    </form>
-                                </li>
-                            {% else %}
-                                <li class="last">
-                                    <a href="{% url 'users:login' %}">Войти</a> | 
-                                    <a href="{% url 'users:register' %}">Регистрация</a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    {% endblock mainmenu %}
-                </div>
+            {% block content %}
+            {% endblock content%}
 
-                {% block content %}
-                {% endblock content %}
+            {% block navigation %}
+            {% endblock %}
 
-                {% block navigation %}
-                {% endblock %}
-
-                {% block extra_js %}{% endblock %}
-            </td>
-        </tr>
+            {% block extra_js %}{% endblock %}
+        </td></tr>
     </table>
 
     <script>
@@ -345,45 +256,44 @@
 
             if (!menuToggle || !mainMenu || !menuOverlay) return;
 
-            function toggleMenu() {
-                menuToggle.classList.toggle('open');
-                mainMenu.classList.toggle('open');
-                menuOverlay.classList.toggle('active');
-                
-                // Блокируем прокрутку body
-                if (mainMenu.classList.contains('open')) {
+            function toggleMenu(show) {
+                if (show) {
+                    menuToggle.classList.add('open');
+                    mainMenu.classList.add('open');
+                    menuOverlay.classList.add('active');
                     document.body.style.overflow = 'hidden';
                 } else {
+                    menuToggle.classList.remove('open');
+                    mainMenu.classList.remove('open');
+                    menuOverlay.classList.remove('active');
                     document.body.style.overflow = '';
                 }
             }
 
-            function closeMenu() {
-                menuToggle.classList.remove('open');
-                mainMenu.classList.remove('open');
-                menuOverlay.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-
-            // Открытие/закрытие по кнопке
+            // Клик по гамбургеру
             menuToggle.addEventListener('click', function(e) {
                 e.stopPropagation();
-                toggleMenu();
+                const isOpen = mainMenu.classList.contains('open');
+                toggleMenu(!isOpen);
             });
 
-            // Закрытие по оверлею
-            menuOverlay.addEventListener('click', closeMenu);
-
-            // Закрытие при клике на ссылку
-            const menuLinks = mainMenu.querySelectorAll('a');
-            menuLinks.forEach(link => {
-                link.addEventListener('click', closeMenu);
+            // Клик по оверлею
+            menuOverlay.addEventListener('click', function() {
+                toggleMenu(false);
             });
 
-            // Закрытие при изменении размера окна
+            // Клик по ссылкам в меню
+            const links = mainMenu.querySelectorAll('a');
+            links.forEach(link => {
+                link.addEventListener('click', function() {
+                    toggleMenu(false);
+                });
+            });
+
+            // При изменении размера окна
             window.addEventListener('resize', function() {
-                if (window.innerWidth > 768 && mainMenu.classList.contains('open')) {
-                    closeMenu();
+                if (window.innerWidth > 768) {
+                    toggleMenu(false);
                 }
             });
         });
