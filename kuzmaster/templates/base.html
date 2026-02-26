@@ -214,6 +214,12 @@
                             </li>
                         {% endfor %}
 
+                        {% if user.is_staff %}
+                            {% for m in menu_staff %}
+                                <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
+                            {% endfor %}
+                        {% endif %}
+
                         {% if user.is_superuser %}
                             {% for m in menu_superuser %}
                                 <li><a href="{% url m.url_name %}">{{m.title}}</a></li>

@@ -6,7 +6,7 @@ from django.views import View
 from django.http import HttpResponseNotFound
 from  . import forms
 from .models import Auto, ZakazNaryad, Client, Avans, Raskhod, Oplata
-from .utils import DataMixin
+from .utils import DataMixin, RedirectToCalculatorMixin
 from django.urls import reverse_lazy
 from django.db.models import Sum
 from django.contrib.auth import get_user_model
@@ -18,7 +18,7 @@ from .paginations import CustomPagination
 from rest_framework import permissions
 
 
-class KuzovHome(LoginRequiredMixin, DataMixin, ListView):
+class KuzovHome(RedirectToCalculatorMixin, DataMixin, ListView):
     template_name = 'kuzov/index.html'
     context_object_name = 'naryad'
     title_page = 'Главная страница'

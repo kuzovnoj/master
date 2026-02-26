@@ -1,6 +1,15 @@
 import requests
 from django.conf import settings
-from django.urls import reverse_lazy
+from django.contrib.auth.mixins import AccessMixin
+from django.shortcuts import redirect
+
+class RedirectToCalculatorMixin(AccessMixin):
+    """Перенаправляет неавторизованных пользователей на калькулятор"""
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('calculator:calculator', car_model_slug='sedan')  # или другой slug по умолчанию
+        return super().dispatch(request, *args, **kwargs)
 
 # Telegram ID
 masters = {
@@ -41,15 +50,17 @@ def send_telegram_message(message, master_id: int = 1):
         print(f"Ошибка отправки в Telegram: {e}")
         return False
 
-# коллекция меню для шаблона для мастеров
+# коллекция меню для всех
 menu = [
+    {'title': "Калькулятор", 'url_name': 'calculator:calculator', 'url_params': {'car_model_slug': 'sedan'}}, 
+]
+# меню для сотрудников
+menuStaff = [
     {'title': "Главная", 'url_name': 'home'},
     {'title': "Сделано", 'url_name': 'home_done'},
     {'title': "ЗН", 'url_name': 'zakaz_naryad'},
-    {'title': "Калькулятор", 'url_name': 'calculator:calculator', 'url_params': {'car_model_slug': 'sedan'}}, 
 ]
-
-# коллекция меню для шаблона для кассиров
+# коллекция меню для кассиров
 menuSuperUser = [
     {'title': "Аванс", 'url_name': 'get_avans'},
     {'title': "Расходник", 'url_name': 'raskhod'},
@@ -70,6 +81,9 @@ class DataMixin:
         if 'mainmenu' not in self.extra_context:
             self.extra_context['mainmenu'] = menu
         
+        if 'menu_staff' not in self.extra_context:
+            self.extra_context['menu_staff'] = menuStaff
+
         if 'menu_superuser' not in self.extra_context:
             self.extra_context['menu_superuser'] = menuSuperUser
 

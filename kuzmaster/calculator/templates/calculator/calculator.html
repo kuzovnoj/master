@@ -2,269 +2,613 @@
 {% load static %}
 {% load calculator_extras %}
 
-{% block title %}Калькулятор кузовного ремонта - {{ car_model.name }}{% endblock %}
+{% block title %}Калькулятор кузовного ремонта - Кузовной мастер{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'calculator/css/style.css' %}">
-<!-- ДОБАВЛЯЕМ МОБИЛЬНЫЕ СТИЛИ ДЛЯ КАЛЬКУЛЯТОРА -->
+<!-- Подключаем шрифты для красивого оформления -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Font Awesome для иконок -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 <style>
+    /* Общие стили для страницы - темная тема */
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: #1a1a1a;
+        min-height: 100vh;
+        color: #e0e0e0;
+    }
+    
+    .calculator-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    /* Шапка с контактами - темная */
+    .company-header {
+        background: #2d2d2d;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #404040;
+    }
+    
+    .company-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #4a90e2, #67b26f, #4a90e2);
+        animation: gradient 3s ease infinite;
+        background-size: 300% 300%;
+    }
+    
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    .company-name {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 48px;
+        font-weight: 700;
+        margin: 0 0 10px 0;
+        background: linear-gradient(135deg, #4a90e2, #67b26f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .company-contacts {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+    
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+        background: #363636;
+        border-radius: 50px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        border: 1px solid #4a4a4a;
+    }
+    
+    .contact-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        background: #404040;
+    }
+    
+    .contact-item i {
+        font-size: 20px;
+        color: #4a90e2;
+    }
+    
+    .contact-item span {
+        font-size: 18px;
+        font-weight: 500;
+        color: #e0e0e0;
+    }
+    
+    .contact-item a {
+        text-decoration: none;
+        color: #e0e0e0;
+    }
+    
+    .contact-item a:hover {
+        color: #4a90e2;
+    }
+    
+    /* Преимущества - темные */
+    .benefits-section {
+        background: #2d2d2d;
+        border-radius: 20px;
+        padding: 40px 30px;
+        margin: 30px 0;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        border: 1px solid #404040;
+    }
+    
+    .benefits-title {
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 32px;
+        font-weight: 600;
+        margin-bottom: 40px;
+        color: #e0e0e0;
+        position: relative;
+    }
+    
+    .benefits-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, #4a90e2, #67b26f);
+        border-radius: 3px;
+    }
+    
+    .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-top: 30px;
+    }
+    
+    .benefit-card {
+        text-align: center;
+        padding: 30px 20px;
+        background: #363636;
+        border-radius: 15px;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #4a4a4a;
+    }
+    
+    .benefit-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #4a90e2, #67b26f);
+        transform: scaleX(0);
+        transition: transform 0.3s;
+    }
+    
+    .benefit-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    .benefit-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        background: #3a3a3a;
+    }
+    
+    .benefit-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 20px;
+        background: #2d2d2d;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        color: #4a90e2;
+        box-shadow: 0 5px 15px rgba(74,144,226,0.2);
+        transition: all 0.3s;
+        border: 2px solid #4a4a4a;
+    }
+    
+    .benefit-card:hover .benefit-icon {
+        transform: rotateY(180deg);
+        color: #67b26f;
+        border-color: #67b26f;
+    }
+    
+    .benefit-card h3 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        margin: 15px 0 10px;
+        color: #e0e0e0;
+    }
+    
+    .benefit-card p {
+        font-size: 14px;
+        color: #b0b0b0;
+        line-height: 1.6;
+        margin: 0;
+    }
+    
+    /* Калькулятор - темный */
+    .calculator-container {
+        background: #2d2d2d;
+        border-radius: 20px;
+        padding: 30px;
+        margin: 30px 0;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        border: 1px solid #404040;
+    }
+    
+    .calculator-container h1 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 36px;
+        font-weight: 600;
+        color: #e0e0e0;
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+    }
+    
+    .calculator-container h1::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 3px;
+        background: linear-gradient(90deg, #4a90e2, #67b26f);
+        border-radius: 3px;
+    }
+    
+    /* Адаптация существующих элементов под темную тему */
+    .projection-card {
+        background: #363636 !important;
+        border: 1px solid #4a4a4a !important;
+    }
+    
+    .projection-card h3 {
+        color: #e0e0e0 !important;
+    }
+    
+    .selected-parts-section {
+        background: #363636 !important;
+        border: 1px solid #4a4a4a !important;
+    }
+    
+    .selected-parts-section h2 {
+        color: #e0e0e0 !important;
+    }
+    
+    .selected-parts-table th {
+        background-color: #404040 !important;
+        color: #e0e0e0 !important;
+        border-bottom: 2px solid #4a90e2 !important;
+    }
+    
+    .selected-parts-table td {
+        color: #b0b0b0 !important;
+        border-bottom: 1px solid #4a4a4a !important;
+    }
+    
+    .selected-parts-table tbody tr:hover {
+        background-color: #3a3a3a !important;
+    }
+    
+    .selected-parts-table tfoot {
+        background-color: #404040 !important;
+    }
+    
+    .price, .total-price {
+        color: #67b26f !important;
+    }
+    
+    .service-select {
+        background: #2d2d2d !important;
+        color: #e0e0e0 !important;
+        border: 1px solid #4a4a4a !important;
+    }
+    
+    .service-select option {
+        background: #2d2d2d !important;
+        color: #e0e0e0 !important;
+    }
+    
+    .remove-btn {
+        color: #ff6b6b !important;
+    }
+    
+    .no-parts {
+        color: #b0b0b0 !important;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #4a90e2, #67b26f) !important;
+        color: white !important;
+        border: none !important;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #3a80d2, #57a25f) !important;
+    }
+    
+    .btn-secondary {
+        background: #404040 !important;
+        color: #e0e0e0 !important;
+        border: 1px solid #4a4a4a !important;
+    }
+    
+    .btn-secondary:hover {
+        background: #4a4a4a !important;
+    }
+    
+    /* Модальное окно - темное */
+    .modal-content {
+        background: #2d2d2d !important;
+        border: 1px solid #4a4a4a !important;
+    }
+    
+    .modal-content h3 {
+        color: #e0e0e0 !important;
+    }
+    
+    .service-option {
+        background: #363636 !important;
+        border: 1px solid #4a4a4a !important;
+        color: #e0e0e0 !important;
+    }
+    
+    .service-option:hover {
+        background: #3a3a3a !important;
+    }
+    
+    .service-price {
+        color: #67b26f !important;
+    }
+    
+    .modal-actions .btn-primary,
+    .modal-actions .btn-secondary {
+        background: #404040 !important;
+        border: 1px solid #4a4a4a !important;
+        color: #e0e0e0 !important;
+    }
+    
+    .modal-actions .btn-primary:hover,
+    .modal-actions .btn-secondary:hover {
+        background: #4a4a4a !important;
+    }
+    
+    /* Футер */
+    .footer-text {
+        text-align: center;
+        margin: 30px 0;
+        opacity: 0.8;
+        color: #b0b0b0;
+    }
+    
+    /* Адаптация для мобильных */
     @media screen and (max-width: 768px) {
-        /* Специфичные для калькулятора мобильные стили */
-        .projections-grid {
-            grid-template-columns: 1fr !important;
-            gap: 15px !important;
+        .company-name {
+            font-size: 36px;
         }
         
-        .projection-card {
-            padding: 10px !important;
+        .company-contacts {
+            flex-direction: column;
+            gap: 15px;
         }
         
-        .image-container {
-            width: 100% !important;
-            overflow: hidden !important;
+        .contact-item {
+            justify-content: center;
         }
         
-        .overlay-canvas {
-            touch-action: manipulation !important;
-            -webkit-tap-highlight-color: transparent !important;
+        .benefits-title {
+            font-size: 28px;
         }
         
-        .selected-parts-table {
-            display: block !important;
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch !important;
-            font-size: 14px !important;
+        .benefits-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
         }
         
-        .selected-parts-table td,
-        .selected-parts-table th {
-            padding: 8px 5px !important;
-            white-space: nowrap !important;
+        .calculator-container {
+            padding: 20px;
         }
         
-        .service-select {
-            width: 100px !important;
-            font-size: 12px !important;
-            padding: 8px 5px !important;
-        }
-        
-        .modal-content {
-            width: 95% !important;
-            padding: 15px !important;
-            max-height: 80vh !important;
-            overflow-y: auto !important;
-        }
-        
-        .service-option {
-            flex-wrap: wrap !important;
-            padding: 12px !important;
-            min-height: 50px !important;
-        }
-        
-        .service-price {
-            margin-left: 40px !important;
-            width: 100% !important;
-            text-align: right !important;
-            margin-top: 5px !important;
-        }
-        
-        .btn {
-            padding: 12px 20px !important;
-            font-size: 16px !important;
-            min-width: 120px !important;
-        }
-        
-        .actions {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 10px !important;
-        }
-        
-        .actions .btn {
-            margin: 0 !important;
-            width: 100% !important;
-        }
-        
-        .no-parts {
-            padding: 20px !important;
-            font-size: 14px !important;
-        }
-        
-        h1 {
-            font-size: 24px !important;
-            margin-bottom: 20px !important;
-        }
-        
-        h2 {
-            font-size: 20px !important;
-        }
-        
-        h3 {
-            font-size: 16px !important;
+        .calculator-container h1 {
+            font-size: 28px;
         }
     }
     
-    /* Для очень маленьких экранов */
     @media screen and (max-width: 480px) {
-        .projection-card h3 {
-            font-size: 14px !important;
+        .company-name {
+            font-size: 28px;
         }
         
-        .selected-parts-table {
-            font-size: 12px !important;
+        .contact-item span {
+            font-size: 16px;
         }
         
-        .service-select {
-            width: 80px !important;
-            font-size: 11px !important;
-        }
-        
-        .remove-btn {
-            font-size: 16px !important;
-            padding: 5px 8px !important;
-        }
-        
-        .modal-content h3 {
-            font-size: 16px !important;
-        }
-    }
-    
-    /* Для планшетов */
-    @media screen and (min-width: 769px) and (max-width: 1024px) {
-        .projections-grid {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 20px !important;
-        }
-        
-        .projection-card {
-            padding: 15px !important;
-        }
-    }
-    
-    /* Touch-устройства */
-    @media (hover: none) and (pointer: coarse) {
-        .service-option,
-        .btn,
-        .remove-btn,
-        .service-select {
-            min-height: 44px !important;
-        }
-        
-        .service-option input[type="radio"] {
-            width: 20px !important;
-            height: 20px !important;
-            margin-right: 15px !important;
-        }
-        
-        .overlay-canvas {
-            cursor: pointer !important;
+        .benefit-card {
+            padding: 20px 15px;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="calculator-container">
-    <h1>Калькулятор кузовного ремонта: {{ car_model.name }}</h1>
-    
-    <!-- Блок с сообщениями -->
-    {% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    
-    <!-- Блок с проекциями -->
-    <div class="projections-grid">
-        {% for projection in projections %}
-        <div class="projection-card" data-projection-id="{{ projection.id }}">
-            <h3>{{ projection.name }}</h3>
-            <div class="image-container">
-                <img src="{{ projection.image.url }}" 
-                     alt="{{ projection.name }}" 
-                     class="car-image"
-                     id="projection-{{ projection.id }}-image">
-                <canvas class="overlay-canvas" 
-                        id="projection-{{ projection.id }}-canvas"
-                        width="{{ projection.image.width }}"
-                        height="{{ projection.image.height }}"
-                        data-projection-id="{{ projection.id }}"
-                        data-parts='[
-                            {% for part in parts_by_projection|get_item:projection.id %}
-                            {
-                                "id": {{ part.id }},
-                                "name": "{{ part.name|escapejs }}",
-                                "coordinates": "{{ part.coordinates|escapejs }}"
-                            }{% if not forloop.last %},{% endif %}
-                            {% endfor %}
-                        ]'>
-                </canvas>
+<div class="calculator-wrapper">
+    <!-- Шапка с контактами -->
+    <div class="company-header">
+        <h1 class="company-name">🏢 Кузовной мастер</h1>
+        <div class="company-contacts">
+            <div class="contact-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Жердева, 10в, к1</span>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <a href="tel:+79240105333">8 (924) 010-53-33</a>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-clock"></i>
+                <span>Ежедневно 9:00 - 20:00</span>
             </div>
         </div>
-        {% endfor %}
     </div>
-    
-    <!-- Список выбранных деталей -->
-    <div class="selected-parts-section">
-        <h2>Выбранные детали</h2>
+
+    <!-- Калькулятор -->
+    <div class="calculator-container">
+        <h1>Калькулятор стоимости кузовного ремонта</h1>
         
-        {% if selected_parts %}
-        <table class="selected-parts-table">
-            <thead>
-                <tr>
-                    <th>Деталь</th>
-                    <th>Услуга</th>
-                    <th>Стоимость</th>
-                    <th>Действия</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in selected_parts %}
-                <tr>
-                    <td>{{ item.part.name }}</td>
-                    <td>
-                        <form method="post" action="{% url 'calculator:update_service' item.id %}" class="service-form">
-                            {% csrf_token %}
-                            <select name="service_id" onchange="this.form.submit()" class="service-select">
-                                {% for service in services %}
-                                <option value="{{ service.id }}" {% if service.id == item.service.id %}selected{% endif %}>
-                                    {{ service.name }}
-                                </option>
+        <!-- Блок с сообщениями -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Блок с проекциями -->
+        <div class="projections-grid">
+            {% for projection in projections %}
+            <div class="projection-card" data-projection-id="{{ projection.id }}">
+        <!--        <h3>{{ projection.name }}</h3>       -->
+                <div class="image-container">
+                    <img src="{{ projection.image.url }}" 
+                         alt="{{ projection.name }}" 
+                         class="car-image"
+                         id="projection-{{ projection.id }}-image">
+                    <canvas class="overlay-canvas" 
+                            id="projection-{{ projection.id }}-canvas"
+                            width="{{ projection.image.width }}"
+                            height="{{ projection.image.height }}"
+                            data-projection-id="{{ projection.id }}"
+                            data-parts='[
+                                {% for part in parts_by_projection|get_item:projection.id %}
+                                {
+                                    "id": {{ part.id }},
+                                    "name": "{{ part.name|escapejs }}",
+                                    "coordinates": "{{ part.coordinates|escapejs }}"
+                                }{% if not forloop.last %},{% endif %}
                                 {% endfor %}
-                            </select>
-                        </form>
-                    </td>
-                    <td class="price">{{ item.price }} ₽</td>
-                    <td>
-                        <form method="post" action="{% url 'calculator:remove_part' item.id %}" class="remove-form">
-                            {% csrf_token %}
-                            <button type="submit" class="remove-btn" onclick="return confirm('Удалить деталь из расчета?')">✕</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="2"><strong>Итого:</strong></td>
-                    <td colspan="2"><strong class="total-price">{{ total_price }} ₽</strong></td>
-                </tr>
-            </tfoot>
-        </table>
-        {% else %}
-        <p class="no-parts">Детали не выбраны. Нажмите на деталь на изображении, чтобы добавить её в расчет.</p>
+                            ]'>
+                    </canvas>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Список выбранных деталей -->
+        <div class="selected-parts-section">
+            <h2>Выбранные детали</h2>
+            
+            {% if selected_parts %}
+            <table class="selected-parts-table">
+                <thead>
+                    <tr>
+                        <th>Деталь</th>
+                        <th>Услуга</th>
+                        <th>Стоимость</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in selected_parts %}
+                    <tr>
+                        <td>{{ item.part.name }}</td>
+                        <td>
+                            <form method="post" action="{% url 'calculator:update_service' item.id %}" class="service-form">
+                                {% csrf_token %}
+                                <select name="service_id" onchange="this.form.submit()" class="service-select">
+                                    {% for service in services %}
+                                    <option value="{{ service.id }}" {% if service.id == item.service.id %}selected{% endif %}>
+                                        {{ service.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </td>
+                        <td class="price">{{ item.price }} ₽</td>
+                        <td>
+                            <form method="post" action="{% url 'calculator:remove_part' item.id %}" class="remove-form">
+                                {% csrf_token %}
+                                <button type="submit" class="remove-btn" onclick="return confirm('Удалить деталь из расчета?')">✕</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2"><strong>Итого:</strong></td>
+                        <td colspan="2"><strong class="total-price">{{ total_price }} ₽</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+            {% else %}
+            <p class="no-parts">Нажмите на деталь на изображении, чтобы добавить её в расчет</p>
+            {% endif %}
+            <h3>*Точную стоимость можно узнать у мастера при прохождении визуального осмотра. Цена может немного меняться в большую или меньшую сторону.</h3>
+        </div>
+        
+        <!-- Кнопки -->
+        {% if selected_parts %}
+        <div class="actions">
+            <button onclick="window.print()" class="btn btn-secondary">
+                <i class="fas fa-print"></i> Распечатать
+            </button>
+            <button onclick="location.reload()" class="btn btn-primary">
+                <i class="fas fa-redo"></i> Новый расчет
+            </button>
+        </div>
         {% endif %}
     </div>
-    
-    <!-- Кнопка для сброса -->
-    {% if selected_parts %}
-    <div class="actions">
-        <button onclick="window.print()" class="btn btn-secondary">Распечатать</button>
-        <button onclick="location.reload()" class="btn btn-primary">Новый расчет</button>
+
+    <!-- Преимущества и гарантии -->
+    <div class="benefits-section">
+        <h2 class="benefits-title">Почему выбирают нас</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <h3>Гарантия на проделанные работы</h3>
+                <p>На все виды работ предоставляем гарантию. Используем только качественные материалы и современное оборудование.</p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-ruble-sign"></i>
+                </div>
+                <h3>Прозрачные цены</h3>
+                <p>Калькулятор покажет стоимость до начала осмотра. Никаких скрытых платежей.</p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-paint-roller"></i>
+                </div>
+                <h3>Качественная покраска</h3>
+                <p>Современная покрасочная камера, профессиональные материалы.</p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-car"></i>
+                </div>
+                <h3>Любые марки авто</h3>
+                <p>Работаем с отечественными и иностранными автомобилями. Большой опыт ремонта всех марок.</p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Бесплатная диагностика</h3>
+                <p>Приехали к нам - осмотр и консультация бесплатно. Честно расскажем о необходимых работах.</p>
+            </div>
+        </div>
     </div>
-    {% endif %}
+    
+    <!-- Дополнительная информация -->
+    <div class="footer-text">
+        <p>© 2026 Кузовной мастер. Все права защищены.</p>
+        <p>Жердева, 10в, к1 | Телефон: 8 (924) 010-53-33</p>
+    </div>
 </div>
 
 <!-- Скрытые данные для JavaScript -->
@@ -275,12 +619,12 @@
         {% for service in services %}
         {
             "id": {{ service.id }},
-            "name": "{{ service.name|escapejs }}"
+            "name": "{{ service.name|escapejs }}",
+            "price": "{{ service.price }}"
         }{% if not forloop.last %},{% endif %}
         {% endfor %}
     ]
 </script>
-
 {% endblock %}
 
 {% block extra_js %}
