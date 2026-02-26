@@ -218,6 +218,9 @@
                             {% for m in menu_superuser %}
                                 <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
                             {% endfor %}
+                            <li class="last">
+                                {{total}}
+                            </li>
                         {% endif %}
 
                         {% if user.is_authenticated %}
