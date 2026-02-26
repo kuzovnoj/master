@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Кузовной мастер{% endblock %}
+
+{% block extra_css %}
+<style>
+    .gallery-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    /* Фильтры */
+    .filter-section {
+        background: #2d2d2d;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 1px solid #404040;
+    }
+    
+    .filter-title {
+        color: #e0e0e0;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 24px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .filter-form {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .filter-group {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .filter-group label {
+        display: block;
+        color: #b0b0b0;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    
+    .filter-group select {
+        width: 100%;
+        padding: 12px;
+        background: #363636;
+        border: 1px solid #4a4a4a;
+        color: #e0e0e0;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+    .filter-group select:focus {
+        outline: none;
+        border-color: #4a90e2;
+    }
+    
+    .filter-btn {
+        align-self: flex-end;
+        background: linear-gradient(135deg, #4a90e2, #67b26f);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: transform 0.3s;
+        margin-bottom: 1px;
+    }
+    
+    .filter-btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    /* Сетка галереи */
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 30px;
+    }
+    
+    .gallery-item {
+        background: #2d2d2d;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid #404040;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .gallery-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    
+    .image-pair {
+        display: flex;
+        position: relative;
+        height: 250px;
+    }
+    
+    .before-image,
+    .after-image {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .before-image {
+        border-right: 2px solid #404040;
+    }
+    
+    .before-image img,
+    .after-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+    
+    .gallery-item:hover .before-image img,
+    .gallery-item:hover .after-image img {
+        transform: scale(1.05);
+    }
+    
+    .image-label {
+        position: absolute;
+        top: 10px;
+        padding: 5px 15px;
+        font-size: 14px;
+        font-weight: bold;
+        border-radius: 20px;
+        z-index: 2;
+    }
+    
+    .before-label {
+        left: 10px;
+        background: rgba(220, 53, 69, 0.9);
+        color: white;
+    }
+    
+    .after-label {
+        right: 10px;
+        background: rgba(40, 167, 69, 0.9);
+        color: white;
+    }
+    
+    .item-info {
+        padding: 20px;
+    }
+    
+    .car-info {
+        font-size: 18px;
+        font-weight: bold;
+        color: #e0e0e0;
+        margin-bottom: 5px;
+    }
+    
+    .car-model {
+        color: #4a90e2;
+    }
+    
+    .description {
+        color: #b0b0b0;
+        font-size: 14px;
+        margin: 0;
+    }
+    
+    .no-images {
+        text-align: center;
+        padding: 60px;
+        background: #2d2d2d;
+        border-radius: 20px;
+        border: 1px solid #404040;
+    }
+    
+    .no-images i {
+        font-size: 60px;
+        color: #4a4a4a;
+        margin-bottom: 20px;
+    }
+    
+    .no-images p {
+        color: #b0b0b0;
+        font-size: 18px;
+    }
+    
+    /* Адаптивность */
+    @media screen and (max-width: 768px) {
+        .gallery-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .image-pair {
+            height: 200px;
+        }
+        
+        .filter-form {
+            flex-direction: column;
+        }
+        
+        .filter-group {
+            width: 100%;
+        }
+        
+        .filter-btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="gallery-container">
+    <!-- Фильтры -->
+    <div class="filter-section">
+        <h2 class="filter-title">📸 Выберите автомобиль</h2>
+        
+        <form method="get" class="filter-form">
+            <div class="filter-group">
+                <label for="brand-select">Марка</label>
+                <select name="brand" id="brand-select">
+                    <option value="">Все марки</option>
+                    {% for brand in form.fields.brand.queryset %}
+                    <option value="{{ brand.id }}" {% if selected_brand == brand.id|stringformat:"s" %}selected{% endif %}>
+                        {{ brand.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="model-select">Модель</label>
+                <select name="model" id="model-select">
+                    <option value="">Все модели</option>
+                    {% if selected_brand %}
+                        {% for model in form.fields.model.queryset %}
+                        <option value="{{ model.id }}" {% if selected_model == model.id|stringformat:"s" %}selected{% endif %}>
+                            {{ model.name }}
+                        </option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+            
+            <button type="submit" class="filter-btn">
+                <i class="fas fa-search"></i> Показать
+            </button>
+        </form>
+    </div>
+    
+    <!-- Галерея -->
+    <div class="gallery-grid">
+        {% for image in images %}
+        <div class="gallery-item">
+            <div class="image-pair">
+                <div class="before-image">
+                    <img src="{{ image.before_image.url }}" alt="До ремонта">
+                    <span class="image-label before-label">ДО</span>
+                </div>
+                <div class="after-image">
+                    <img src="{{ image.after_image.url }}" alt="После ремонта">
+                    <span class="image-label after-label">ПОСЛЕ</span>
+                </div>
+            </div>
+            <div class="item-info">
+                <div class="car-info">
+                    <span class="car-brand">{{ image.car_model.brand.name }}</span>
+                    <span class="car-model">{{ image.car_model.name }}</span>
+                </div>
+                {% if image.description %}
+                <p class="description">{{ image.description }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-images">
+            <i class="fas fa-images"></i>
+            <p>Пока нет фотографий для выбранной модели</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    // AJAX загрузка моделей при выборе марки
+    document.getElementById('brand-select').addEventListener('change', function() {
+        const brandId = this.value;
+        const modelSelect = document.getElementById('model-select');
+        
+        if (!brandId) {
+            // Если выбрана "Все марки", очищаем модели
+            modelSelect.innerHTML = '<option value="">Все модели</option>';
+            return;
+        }
+        
+        // Загружаем модели через AJAX
+        fetch(`/gallery/load-models/?brand_id=${brandId}`)
+            .then(response => response.json())
+            .then(models => {
+                modelSelect.innerHTML = '<option value="">Все модели</option>';
+                models.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.id;
+                    option.textContent = model.name;
+                    modelSelect.appendChild(option);
+                });
+            });
+    });
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+{% endblock %}

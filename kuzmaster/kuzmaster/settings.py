@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'kuzov',
     'users',
     'calculator',
+    'gallery',
     'rest_framework',
     'drf_spectacular',
     'rest_framework_simplejwt',
