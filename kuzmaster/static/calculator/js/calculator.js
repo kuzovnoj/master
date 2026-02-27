@@ -117,6 +117,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleMouseMove(e) {
         const canvas = e.currentTarget;
+        if (!canvas) return;
+
         const ctx = canvas.getContext('2d');
         const parts = canvas.parts || [];
         const rect = canvas.getBoundingClientRect();
@@ -230,28 +232,67 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function handleMouseLeave(e) {
         const canvas = e.currentTarget;
+        if (!canvas) return;
         // Просто перерисовываем канвас в нормальное состояние
         redrawAllCanvases();
         canvas.style.cursor = 'default';
     }
     
     function handleClick(e) {
-        const canvas = e.currentTarget;
+        console.log('handleClick вызван');
+        
+        const canvas = e.currentTarget;  // Получаем canvas из события
+        if (!canvas) {
+            console.error('Canvas не найден');
+            return;
+        }
+        
         const ctx = canvas.getContext('2d');
-        const parts = canvas.parts || [];
+        if (!ctx) {
+            console.error('Не удалось получить контекст canvas');
+            return;
+        }
+        
+        const parts = canvas.parts || [];  // Получаем parts из canvas
         const rect = canvas.getBoundingClientRect();
+        
+        // Защита от деления на ноль
+        if (rect.width === 0 || rect.height === 0) {
+            console.error('Canvas имеет нулевой размер');
+            return;
+        }
+        
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;
         
         const x = (e.clientX - rect.left) * scaleX;
         const y = (e.clientY - rect.top) * scaleY;
         
+        console.log(`Координаты клика: x=${x}, y=${y}, деталей: ${parts.length}`);
+        
         // Ищем деталь, на которую кликнули
+        let found = false;
         for (let part of parts) {
-            if (part.path && ctx.isPointInPath(part.path, x, y)) {
-                showServiceModal(part);
-                break;
+            if (part.path) {
+                try {
+                    if (ctx.isPointInPath(part.path, x, y)) {
+                        console.log('Клик на деталь:', part.name);
+                        if (typeof window.showServiceModal === 'function') {
+                            window.showServiceModal(part);
+                            found = true;
+                            break;
+                        } else {
+                            console.error('showServiceModal не определена');
+                        }
+                    }
+                } catch (err) {
+                    console.error('Ошибка при проверке точки в пути:', err, part);
+                }
             }
+        }
+        
+        if (!found) {
+            console.log('Клик не попал ни в одну деталь');
         }
     }
     
@@ -475,4 +516,134 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+});
+
+// ========== ГЛОБАЛЬНЫЕ ФУНКЦИИ ==========
+// Делаем showServiceModal доступной глобально
+window.showServiceModal = function(part) {
+    console.log('🟢 [GLOBAL] showServiceModal вызвана для детали:', part);
+    
+    // Проверяем, что услуги есть
+    let servicesToShow = part.services;
+    
+    if (!servicesToShow || servicesToShow.length === 0) {
+        console.error('❌ У детали нет услуг');
+        alert('Для этой детали временно нет доступных услуг');
+        return;
+    }
+    
+    // Получаем CSRF токен
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+                }
+            }
+        return cookieValue;
+    }
+    
+    const csrftoken = getCookie('csrftoken');
+    
+    // Удаляем предыдущие модальные окна
+    document.querySelectorAll('.modal').forEach(m => m.remove());
+    
+    // Создаем HTML для услуг
+    const serviceOptionsHtml = servicesToShow.map(service => `
+        <label class="service-option" style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0; padding: 10px; background: #363636; border: 1px solid #4a4a4a; border-radius: 5px; cursor: pointer;">
+            <span style="display: flex; align-items: center;">
+                <input type="radio" name="service_id" value="${service.id}" required style="margin-right: 10px;">
+                <span style="color: #e0e0e0;">${service.name}</span>
+            </span>
+            <span style="color: #67b26f; font-weight: bold;">${service.price} ₽</span>
+        </label>
+    `).join('');
+    
+    // Создаем модальное окно
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 10000;';
+    
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = 'background: #2d2d2d; padding: 30px; border-radius: 15px; max-width: 500px; width: 90%; border: 1px solid #4a4a4a;';
+    
+    modalContent.innerHTML = `
+        <h3 style="color: #e0e0e0; margin-bottom: 20px; font-family: Montserrat, sans-serif;">Выберите услугу для детали "${part.name}"</h3>
+        <form id="service-form-${part.id}" method="post" action="/calculator/part/add/">
+            <input type="hidden" name="csrfmiddlewaretoken" value="${csrftoken}">
+            <input type="hidden" name="part_id" value="${part.id}">
+            <div style="margin-bottom: 20px; max-height: 400px; overflow-y: auto;">
+                ${serviceOptionsHtml}
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="this.closest('.modal').remove()" style="background: #404040; color: white; border: 1px solid #4a4a4a; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">Отмена</button>
+                <button type="submit" style="background: linear-gradient(135deg, #4a90e2, #67b26f); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">Добавить</button>
+            </div>
+        </form>
+    `;
+    
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+    console.log('✅ Модальное окно добавлено в DOM');
+    
+    // Добавляем обработчик отправки формы
+    document.getElementById(`service-form-${part.id}`).addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        
+        try {
+            const response = await fetch('/calculator/part/add/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': csrftoken
+                }
+            });
+            
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                const data = await response.json();
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Ошибка: ' + JSON.stringify(data.errors));
+                }
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Произошла ошибка при отправке');
+        }
+    });
+};
+
+// Делаем вспомогательные функции глобальными
+window.showAppointmentModal = function() {
+    console.log('Открытие модального окна записи');
+    const modal = document.getElementById('appointmentModal');
+    if (modal) modal.style.display = 'flex';
+};
+
+window.showCallbackModal = function() {
+    console.log('Открытие модального окна звонка');
+    const modal = document.getElementById('callbackModal');
+    if (modal) modal.style.display = 'flex';
+};
+
+window.closeModal = function(modalId) {
+    console.log('Закрытие модального окна:', modalId);
+    const modal = document.getElementById(modalId);
+    if (modal) modal.style.display = 'none';
+};
+
+// Проверяем, что всё определилось
+console.log('✅ Глобальные функции загружены:', {
+    showServiceModal: typeof window.showServiceModal === 'function',
+    showAppointmentModal: typeof window.showAppointmentModal === 'function',
+    showCallbackModal: typeof window.showCallbackModal === 'function'
 });
