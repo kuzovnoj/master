@@ -54,6 +54,7 @@ def send_telegram_message(message, master_id: int = 1):
 menu = [
     {'title': "Калькулятор", 'url_name': 'calculator:calculator', 'url_params': {'car_model_slug': 'sedan'}},
     {'title': "Галлерея работ", 'url_name': 'gallery:gallery'}, 
+    {'title': "Услуги и цены", 'url_name': 'works:price_list'},
 ]
 # меню для сотрудников
 menuStaff = [

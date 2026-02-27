@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .models import CarBrand, CarModel, GalleryImage
 from .forms import FilterForm
+from kuzov.utils import DataMixin
 
 def gallery_view(request):
     """Главная страница галереи"""
@@ -26,6 +27,9 @@ def gallery_view(request):
     # Форма фильтрации
     form = FilterForm(request.GET or None)
     
+    mixin = DataMixin()
+    base_context = mixin.extra_context
+
     context = {
         'title': 'Галерея работ',
         'images': images,
@@ -33,7 +37,10 @@ def gallery_view(request):
         'selected_brand': brand_id,
         'selected_model': model_id,
     }
-    return render(request, 'gallery/gallery.html', context)
+
+    union_context = {**context, **base_context}
+
+    return render(request, 'gallery/gallery.html', union_context)
 
 def load_models(request):
     """AJAX запрос для загрузки моделей по выбранной марке"""

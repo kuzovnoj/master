@@ -1,0 +1,418 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Кузовной мастер{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: #1a1a1a;
+        min-height: 100vh;
+        color: #e0e0e0;
+    }
+
+    .price-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .price-header {
+        background: #2d2d2d;
+        border-radius: 20px;
+        padding: 40px;
+        margin-bottom: 30px;
+        text-align: center;
+        border: 1px solid #404040;
+    }
+    
+    .price-header h1 {
+        font-size: 36px;
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, #4a90e2, #67b26f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .price-header p {
+        color: #b0b0b0;
+        font-size: 18px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    /* Десктопная версия */
+    .price-desktop {
+        display: block;
+    }
+    
+    .price-mobile {
+        display: none;
+    }
+    
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .category-card {
+        background: #2d2d2d;
+        border: 2px solid transparent;
+        border-radius: 15px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+        border: 1px solid #404040;
+    }
+    
+    .category-card:hover,
+    .category-card.active {
+        border-color: #4a90e2;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(74,144,226,0.3);
+        background: #363636;
+    }
+    
+    .category-card i {
+        font-size: 40px;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #4a90e2, #67b26f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .category-card h3 {
+        color: #e0e0e0;
+        font-size: 18px;
+        margin: 0;
+    }
+    
+    /* Блок с ценами и фоном */
+    .price-display {
+        position: relative;
+        background: #2d2d2d;
+        border-radius: 20px;
+        overflow: hidden;
+        min-height: 500px;
+        border: 1px solid #404040;
+    }
+    
+    .category-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.15;
+        transition: opacity 0.5s;
+        z-index: 1;
+    }
+    
+    .price-content {
+        position: relative;
+        z-index: 2;
+        padding: 30px;
+    }
+    
+    .price-content h2 {
+        color: #e0e0e0;
+        font-size: 28px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #4a90e2;
+        display: inline-block;
+    }
+    
+    .price-table {
+        width: 100%;
+        max-width: 800px;
+    }
+    
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #404040;
+        transition: background 0.2s;
+    }
+    
+    .price-row:hover {
+        background: #363636;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .part-name {
+        color: #e0e0e0;
+        font-size: 16px;
+    }
+    
+    .part-description {
+        color: #b0b0b0;
+        font-size: 14px;
+        margin-left: 10px;
+    }
+    
+    .part-price {
+        color: #67b26f;
+        font-size: 18px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+    
+    .no-prices {
+        color: #b0b0b0;
+        font-size: 16px;
+        padding: 40px;
+        text-align: center;
+        background: #363636;
+        border-radius: 10px;
+    }
+    
+    /* Адаптивность */
+    @media screen and (max-width: 768px) {
+        .price-desktop {
+            display: none;
+        }
+        
+        .price-mobile {
+            display: block;
+        }
+        
+        /* Горизонтальный скролл для категорий */
+        .categories-scroll {
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+        
+        .categories-scroll .categories-grid {
+            display: flex;
+            flex-wrap: nowrap;
+            width: max-content;
+            gap: 15px;
+            padding: 0 5px;
+        }
+        
+        .categories-scroll .category-card {
+            width: 200px;
+            flex-shrink: 0;
+        }
+        
+        /* Вертикальный скролл для деталей */
+        .mobile-price-content {
+            max-height: 400px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-right: 5px;
+        }
+        
+        .price-content {
+            padding: 20px;
+        }
+        
+        .price-content h2 {
+            font-size: 24px;
+            margin-top: 0;
+        }
+        
+        .price-row {
+            padding: 12px 0;
+        }
+        
+        .part-name {
+            font-size: 15px;
+        }
+        
+        .part-price {
+            font-size: 16px;
+        }
+        
+        .category-background {
+            opacity: 0.1;
+        }
+    }
+    
+    @media screen and (max-width: 480px) {
+        .price-header h1 {
+            font-size: 28px;
+        }
+        
+        .price-header p {
+            font-size: 16px;
+        }
+        
+        .categories-scroll .category-card {
+            width: 160px;
+            padding: 15px;
+        }
+        
+        .category-card i {
+            font-size: 30px;
+        }
+        
+        .category-card h3 {
+            font-size: 16px;
+        }
+        
+        .price-content h2 {
+            font-size: 20px;
+        }
+        
+        .part-name {
+            font-size: 14px;
+        }
+        
+        .part-price {
+            font-size: 14px;
+        }
+        
+        .part-description {
+            font-size: 12px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="price-container">
+    <!-- Заголовок -->
+    <div class="price-header">
+        <h1>💰 Прайс-лист на кузовные работы</h1>
+        <p>Стоимость указана как "от" и может варьироваться в зависимости от сложности работ и состояния автомобиля</p>
+    </div>
+    
+    <!-- Десктопная версия -->
+    <div class="price-desktop">
+        <!-- Категории -->
+        <div class="categories-grid">
+            {% for category in categories %}
+            <div class="category-card {% if forloop.first %}active{% endif %}" 
+                 onclick="showCategory({{ category.id }})"
+                 data-category-id="{{ category.id }}">
+                <i class="fas {{ category.icon }}"></i>
+                <h3>{{ category.name }}</h3>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Блок с ценами -->
+        {% for category in categories %}
+        <div class="price-display" id="category-{{ category.id }}" style="display: {% if forloop.first %}block{% else %}none{% endif %};">
+            <div class="category-background" style="background-image: url('{{ category.background_image.url }}');"></div>
+            <div class="price-content">
+                <h2>{{ category.name }}</h2>
+                {% if category.items %}
+                <div class="price-table">
+                    {% for item in category.items %}
+                    <div class="price-row">
+                        <div>
+                            <span class="part-name">{{ item.part.name }}</span>
+                            {% if item.description %}
+                            <span class="part-description">{{ item.description }}</span>
+                            {% endif %}
+                        </div>
+                        <span class="part-price">от {{ item.price_from|floatformat:0 }} ₽</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="no-prices">
+                    <p>Позиции в разработке</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Мобильная версия -->
+    <div class="price-mobile">
+        <!-- Горизонтальный скролл категорий -->
+        <div class="categories-scroll">
+            <div class="categories-grid">
+                {% for category in categories %}
+                <div class="category-card {% if forloop.first %}active{% endif %}" 
+                     onclick="showMobileCategory({{ category.id }})"
+                     data-mobile-category-id="{{ category.id }}">
+                    <i class="fas {{ category.icon }}"></i>
+                    <h3>{{ category.name }}</h3>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Вертикальный скролл деталей -->
+        {% for category in categories %}
+        <div class="price-display" id="mobile-category-{{ category.id }}" style="display: {% if forloop.first %}block{% else %}none{% endif %};">
+            <div class="category-background" style="background-image: url('{{ category.background_image.url }}');"></div>
+            <div class="price-content">
+                <h2>{{ category.name }}</h2>
+                <div class="mobile-price-content">
+                    {% if category.items %}
+                    <div class="price-table">
+                        {% for item in category.items %}
+                        <div class="price-row">
+                            <div>
+                                <span class="part-name">{{ item.part.name }}</span>
+                                {% if item.description %}
+                                <span class="part-description">{{ item.description }}</span>
+                                {% endif %}
+                            </div>
+                            <span class="part-price">от {{ item.price_from|floatformat:0 }} ₽</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="no-prices">
+                        <p>Позиции в разработке</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    // Десктоп: переключение категорий
+    function showCategory(categoryId) {
+        // Обновляем активный класс у карточек
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.classList.remove('active');
+        });
+        document.querySelector(`.category-card[data-category-id="${categoryId}"]`).classList.add('active');
+        
+        // Показываем нужный блок с ценами
+        document.querySelectorAll('[id^="category-"]').forEach(block => {
+            block.style.display = 'none';
+        });
+        document.getElementById(`category-${categoryId}`).style.display = 'block';
+    }
+    
+    // Мобильное: переключение категорий
+    function showMobileCategory(categoryId) {
+        // Обновляем активный класс у карточек
+        document.querySelectorAll('[data-mobile-category-id]').forEach(card => {
+            card.classList.remove('active');
+        });
+        document.querySelector(`[data-mobile-category-id="${categoryId}"]`).classList.add('active');
+        
+        // Показываем нужный блок с ценами
+        document.querySelectorAll('[id^="mobile-category-"]').forEach(block => {
+            block.style.display = 'none';
+        });
+        document.getElementById(`mobile-category-${categoryId}`).style.display = 'block';
+    }
+</script>
+{% endblock %}

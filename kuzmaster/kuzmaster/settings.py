@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'users',
     'calculator',
     'gallery',
+    'works',
     'rest_framework',
     'drf_spectacular',
     'rest_framework_simplejwt',
