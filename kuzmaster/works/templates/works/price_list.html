@@ -18,6 +18,7 @@
         padding: 20px;
     }
     
+    /* Заголовок */
     .price-header {
         background: #2d2d2d;
         border-radius: 20px;
@@ -42,42 +43,41 @@
         margin: 0 auto;
     }
     
-    /* Десктопная версия */
+    /* ДЕСКТОПНАЯ ВЕРСИЯ - колонки */
     .price-desktop {
         display: block;
     }
     
-    .price-mobile {
-        display: none;
-    }
-    
-    .categories-grid {
+    .categories-desktop {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-        margin-bottom: 30px;
+        grid-template-columns: repeat(3, 1fr); /* 3 колонки */
+        gap: 25px;
+        margin-top: 20px;
     }
     
-    .category-card {
+    .category-column {
         background: #2d2d2d;
-        border: 2px solid transparent;
-        border-radius: 15px;
-        padding: 20px;
-        cursor: pointer;
-        transition: all 0.3s;
-        text-align: center;
+        border-radius: 20px;
+        overflow: hidden;
         border: 1px solid #404040;
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: fit-content;
     }
     
-    .category-card:hover,
-    .category-card.active {
+    .category-column:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         border-color: #4a90e2;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(74,144,226,0.3);
-        background: #363636;
     }
     
-    .category-card i {
+    .category-header {
+        background: linear-gradient(135deg, #363636, #404040);
+        padding: 20px;
+        text-align: center;
+        border-bottom: 2px solid #4a90e2;
+    }
+    
+    .category-header i {
         font-size: 40px;
         margin-bottom: 10px;
         background: linear-gradient(135deg, #4a90e2, #67b26f);
@@ -85,79 +85,52 @@
         -webkit-text-fill-color: transparent;
     }
     
-    .category-card h3 {
+    .category-header h3 {
         color: #e0e0e0;
-        font-size: 18px;
+        font-size: 22px;
         margin: 0;
+        font-weight: 500;
     }
     
-    /* Блок с ценами и фоном */
-    .price-display {
-        position: relative;
-        background: #2d2d2d;
-        border-radius: 20px;
-        overflow: hidden;
-        min-height: 500px;
-        border: 1px solid #404040;
-    }
-    
-    .category-background {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-size: cover;
-        background-position: center;
-        opacity: 0.15;
-        transition: opacity 0.5s;
-        z-index: 1;
-    }
-    
-    .price-content {
-        position: relative;
-        z-index: 2;
-        padding: 30px;
-    }
-    
-    .price-content h2 {
-        color: #e0e0e0;
-        font-size: 28px;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #4a90e2;
-        display: inline-block;
-    }
-    
-    .price-table {
-        width: 100%;
-        max-width: 800px;
+    .category-items {
+        padding: 15px;
     }
     
     .price-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 15px 0;
+        padding: 12px 10px;
         border-bottom: 1px solid #404040;
         transition: background 0.2s;
     }
     
+    .price-row:last-child {
+        border-bottom: none;
+    }
+    
     .price-row:hover {
         background: #363636;
-        padding-left: 10px;
-        padding-right: 10px;
+        border-radius: 8px;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .part-info {
+        display: flex;
+        flex-direction: column;
     }
     
     .part-name {
         color: #e0e0e0;
         font-size: 16px;
+        font-weight: 500;
     }
     
     .part-description {
         color: #b0b0b0;
-        font-size: 14px;
-        margin-left: 10px;
+        font-size: 12px;
+        margin-top: 2px;
     }
     
     .part-price {
@@ -165,15 +138,190 @@
         font-size: 18px;
         font-weight: bold;
         white-space: nowrap;
+        background: rgba(103, 178, 111, 0.1);
+        padding: 4px 10px;
+        border-radius: 20px;
     }
     
     .no-prices {
         color: #b0b0b0;
-        font-size: 16px;
-        padding: 40px;
+        font-size: 14px;
+        padding: 20px;
         text-align: center;
         background: #363636;
         border-radius: 10px;
+    }
+    
+    /* МОБИЛЬНАЯ ВЕРСИЯ - горизонтальный скролл */
+    .price-mobile {
+        display: none;
+    }
+    
+    /* Индикаторы скролла */
+    .scroll-indicator {
+        position: relative;
+        margin: 10px 0 20px;
+    }
+    
+    .scroll-indicator-left,
+    .scroll-indicator-right {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #4a90e2, #67b26f);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+        z-index: 10;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    
+    .scroll-indicator-left {
+        left: 5px;
+    }
+    
+    .scroll-indicator-right {
+        right: 5px;
+    }
+    
+    .scroll-indicator-left.visible,
+    .scroll-indicator-right.visible {
+        opacity: 1;
+    }
+    
+    .categories-mobile-scroll {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        padding: 5px 0 20px;
+        margin: 0 -5px;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+    }
+    
+    .categories-mobile-scroll::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+    
+    .categories-mobile {
+        display: flex;
+        gap: 20px;
+        padding: 0 10px;
+        width: max-content;
+    }
+    
+    .mobile-column {
+        width: 280px;
+        background: #2d2d2d;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid #404040;
+        flex-shrink: 0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    /* Эффект "края" для указания возможности скролла */
+    .mobile-column:first-child {
+        position: relative;
+    }
+    
+    .mobile-column:first-child::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -10px;
+        width: 20px;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(26,26,26,0) 0%, rgba(26,26,26,0.5) 100%);
+        pointer-events: none;
+        opacity: 0.5;
+    }
+    
+    .mobile-column:last-child::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -10px;
+        width: 20px;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(26,26,26,0.5) 0%, rgba(26,26,26,0) 100%);
+        pointer-events: none;
+        opacity: 0.5;
+    }
+    
+    .mobile-header {
+        background: linear-gradient(135deg, #363636, #404040);
+        padding: 15px;
+        text-align: center;
+        border-bottom: 2px solid #4a90e2;
+    }
+    
+    .mobile-header i {
+        font-size: 30px;
+        margin-bottom: 5px;
+        background: linear-gradient(135deg, #4a90e2, #67b26f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .mobile-header h3 {
+        color: #e0e0e0;
+        font-size: 18px;
+        margin: 5px 0 0;
+    }
+    
+    .mobile-items {
+        padding: 12px;
+        max-height: 350px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .mobile-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 8px;
+        border-bottom: 1px solid #404040;
+    }
+    
+    .mobile-row:hover {
+        background: #363636;
+        border-radius: 8px;
+    }
+    
+    .mobile-part {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .mobile-part-name {
+        color: #e0e0e0;
+        font-size: 15px;
+        font-weight: 500;
+    }
+    
+    .mobile-part-desc {
+        color: #b0b0b0;
+        font-size: 11px;
+    }
+    
+    .mobile-price {
+        color: #67b26f;
+        font-size: 16px;
+        font-weight: bold;
+        background: rgba(103, 178, 111, 0.1);
+        padding: 3px 8px;
+        border-radius: 15px;
     }
     
     /* Адаптивность */
@@ -186,63 +334,6 @@
             display: block;
         }
         
-        /* Горизонтальный скролл для категорий */
-        .categories-scroll {
-            overflow-x: auto;
-            overflow-y: hidden;
-            -webkit-overflow-scrolling: touch;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-        }
-        
-        .categories-scroll .categories-grid {
-            display: flex;
-            flex-wrap: nowrap;
-            width: max-content;
-            gap: 15px;
-            padding: 0 5px;
-        }
-        
-        .categories-scroll .category-card {
-            width: 200px;
-            flex-shrink: 0;
-        }
-        
-        /* Вертикальный скролл для деталей */
-        .mobile-price-content {
-            max-height: 400px;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-right: 5px;
-        }
-        
-        .price-content {
-            padding: 20px;
-        }
-        
-        .price-content h2 {
-            font-size: 24px;
-            margin-top: 0;
-        }
-        
-        .price-row {
-            padding: 12px 0;
-        }
-        
-        .part-name {
-            font-size: 15px;
-        }
-        
-        .part-price {
-            font-size: 16px;
-        }
-        
-        .category-background {
-            opacity: 0.1;
-        }
-    }
-    
-    @media screen and (max-width: 480px) {
         .price-header h1 {
             font-size: 28px;
         }
@@ -250,34 +341,23 @@
         .price-header p {
             font-size: 16px;
         }
-        
-        .categories-scroll .category-card {
-            width: 160px;
-            padding: 15px;
+    }
+    
+    @media screen and (max-width: 480px) {
+        .price-container {
+            padding: 10px;
         }
         
-        .category-card i {
-            font-size: 30px;
+        .price-header {
+            padding: 25px;
         }
         
-        .category-card h3 {
-            font-size: 16px;
+        .price-header h1 {
+            font-size: 24px;
         }
         
-        .price-content h2 {
-            font-size: 20px;
-        }
-        
-        .part-name {
-            font-size: 14px;
-        }
-        
-        .part-price {
-            font-size: 14px;
-        }
-        
-        .part-description {
-            font-size: 12px;
+        .mobile-column {
+            width: 260px;
         }
     }
 </style>
@@ -287,82 +367,24 @@
 <div class="price-container">
     <!-- Заголовок -->
     <div class="price-header">
-        <h1>💰 Прайс-лист на кузовные работы</h1>
+        <h1>Прайс-лист на кузовные работы</h1>
         <p>Стоимость указана как "от" и может варьироваться в зависимости от сложности работ и состояния автомобиля</p>
     </div>
     
-    <!-- Десктопная версия -->
+    <!-- ДЕСКТОПНАЯ ВЕРСИЯ - колонки -->
     <div class="price-desktop">
-        <!-- Категории -->
-        <div class="categories-grid">
+        <div class="categories-desktop">
             {% for category in categories %}
-            <div class="category-card {% if forloop.first %}active{% endif %}" 
-                 onclick="showCategory({{ category.id }})"
-                 data-category-id="{{ category.id }}">
-                <i class="fas {{ category.icon }}"></i>
-                <h3>{{ category.name }}</h3>
-            </div>
-            {% endfor %}
-        </div>
-        
-        <!-- Блок с ценами -->
-        {% for category in categories %}
-        <div class="price-display" id="category-{{ category.id }}" style="display: {% if forloop.first %}block{% else %}none{% endif %};">
-            <div class="category-background" style="background-image: url('{{ category.background_image.url }}');"></div>
-            <div class="price-content">
-                <h2>{{ category.name }}</h2>
-                {% if category.items %}
-                <div class="price-table">
-                    {% for item in category.items %}
-                    <div class="price-row">
-                        <div>
-                            <span class="part-name">{{ item.part.name }}</span>
-                            {% if item.description %}
-                            <span class="part-description">{{ item.description }}</span>
-                            {% endif %}
-                        </div>
-                        <span class="part-price">от {{ item.price_from|floatformat:0 }} ₽</span>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <div class="no-prices">
-                    <p>Позиции в разработке</p>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    
-    <!-- Мобильная версия -->
-    <div class="price-mobile">
-        <!-- Горизонтальный скролл категорий -->
-        <div class="categories-scroll">
-            <div class="categories-grid">
-                {% for category in categories %}
-                <div class="category-card {% if forloop.first %}active{% endif %}" 
-                     onclick="showMobileCategory({{ category.id }})"
-                     data-mobile-category-id="{{ category.id }}">
+            <div class="category-column">
+                <div class="category-header">
                     <i class="fas {{ category.icon }}"></i>
                     <h3>{{ category.name }}</h3>
                 </div>
-                {% endfor %}
-            </div>
-        </div>
-        
-        <!-- Вертикальный скролл деталей -->
-        {% for category in categories %}
-        <div class="price-display" id="mobile-category-{{ category.id }}" style="display: {% if forloop.first %}block{% else %}none{% endif %};">
-            <div class="category-background" style="background-image: url('{{ category.background_image.url }}');"></div>
-            <div class="price-content">
-                <h2>{{ category.name }}</h2>
-                <div class="mobile-price-content">
+                <div class="category-items">
                     {% if category.items %}
-                    <div class="price-table">
                         {% for item in category.items %}
                         <div class="price-row">
-                            <div>
+                            <div class="part-info">
                                 <span class="part-name">{{ item.part.name }}</span>
                                 {% if item.description %}
                                 <span class="part-description">{{ item.description }}</span>
@@ -371,48 +393,116 @@
                             <span class="part-price">от {{ item.price_from|floatformat:0 }} ₽</span>
                         </div>
                         {% endfor %}
-                    </div>
                     {% else %}
-                    <div class="no-prices">
-                        <p>Позиции в разработке</p>
-                    </div>
+                        <div class="no-prices">
+                            <p>Позиции в разработке</p>
+                        </div>
                     {% endif %}
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
+    </div>
+    
+    <!-- МОБИЛЬНАЯ ВЕРСИЯ - горизонтальный скролл -->
+    <div class="price-mobile">
+        <!-- Индикаторы скролла -->
+        <div class="scroll-indicator">
+            <div class="scroll-indicator-left" id="scrollLeft">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="scroll-indicator-right" id="scrollRight">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+        
+        <!-- Горизонтальный скролл контейнер -->
+        <div class="categories-mobile-scroll" id="mobileScroll">
+            <div class="categories-mobile">
+                {% for category in categories %}
+                <div class="mobile-column">
+                    <div class="mobile-header">
+                        <i class="fas {{ category.icon }}"></i>
+                        <h3>{{ category.name }}</h3>
+                    </div>
+                    <div class="mobile-items">
+                        {% if category.items %}
+                            {% for item in category.items %}
+                            <div class="mobile-row">
+                                <div class="mobile-part">
+                                    <span class="mobile-part-name">{{ item.part.name }}</span>
+                                    {% if item.description %}
+                                    <span class="mobile-part-desc">{{ item.description }}</span>
+                                    {% endif %}
+                                </div>
+                                <span class="mobile-price">{{ item.price_from|floatformat:0 }} ₽</span>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="no-prices">
+                                <p>Позиции в разработке</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-    // Десктоп: переключение категорий
-    function showCategory(categoryId) {
-        // Обновляем активный класс у карточек
-        document.querySelectorAll('.category-card').forEach(card => {
-            card.classList.remove('active');
-        });
-        document.querySelector(`.category-card[data-category-id="${categoryId}"]`).classList.add('active');
-        
-        // Показываем нужный блок с ценами
-        document.querySelectorAll('[id^="category-"]').forEach(block => {
-            block.style.display = 'none';
-        });
-        document.getElementById(`category-${categoryId}`).style.display = 'block';
-    }
+document.addEventListener('DOMContentLoaded', function() {
+    // Мобильный скролл с индикаторами
+    const scrollContainer = document.getElementById('mobileScroll');
+    const leftIndicator = document.getElementById('scrollLeft');
+    const rightIndicator = document.getElementById('scrollRight');
     
-    // Мобильное: переключение категорий
-    function showMobileCategory(categoryId) {
-        // Обновляем активный класс у карточек
-        document.querySelectorAll('[data-mobile-category-id]').forEach(card => {
-            card.classList.remove('active');
-        });
-        document.querySelector(`[data-mobile-category-id="${categoryId}"]`).classList.add('active');
+    if (scrollContainer && leftIndicator && rightIndicator) {
+        function checkScroll() {
+            const scrollLeft = scrollContainer.scrollLeft;
+            const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+            
+            // Показываем левый индикатор, если прокручено не в начало
+            if (scrollLeft > 10) {
+                leftIndicator.classList.add('visible');
+            } else {
+                leftIndicator.classList.remove('visible');
+            }
+            
+            // Показываем правый индикатор, если можно прокрутить дальше
+            if (scrollLeft < maxScroll - 10) {
+                rightIndicator.classList.add('visible');
+            } else {
+                rightIndicator.classList.remove('visible');
+            }
+        }
         
-        // Показываем нужный блок с ценами
-        document.querySelectorAll('[id^="mobile-category-"]').forEach(block => {
-            block.style.display = 'none';
+        // Проверяем при скролле
+        scrollContainer.addEventListener('scroll', checkScroll);
+        
+        // Проверяем при загрузке
+        setTimeout(checkScroll, 100);
+        
+        // Проверяем при изменении размера окна
+        window.addEventListener('resize', checkScroll);
+        
+        // Клик по левому индикатору
+        leftIndicator.addEventListener('click', function() {
+            scrollContainer.scrollBy({
+                left: -300,
+                behavior: 'smooth'
+            });
         });
-        document.getElementById(`mobile-category-${categoryId}`).style.display = 'block';
+        
+        // Клик по правому индикатору
+        rightIndicator.addEventListener('click', function() {
+            scrollContainer.scrollBy({
+                left: 300,
+                behavior: 'smooth'
+            });
+        });
     }
+});
 </script>
 {% endblock %}
