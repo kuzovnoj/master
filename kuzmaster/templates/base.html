@@ -5,7 +5,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>{{title}}</title>
 
     <link rel="icon" type="image/x-icon" href="{% static 'kuzov/favicon.ico' %}">
@@ -166,22 +166,112 @@
             /* Отступ для контента */
             body {
                 padding-top: 60px !important;
+                overflow-x: hidden !important; /* ЗАПРЕЩАЕМ ГОРИЗОНТАЛЬНЫЙ СКРОЛЛ */
+                width: 100% !important;
+                max-width: 100vw !important;
             }
             
-            /* Корректировка таблицы */
+            /* Исправляем табличную верстку */
             .table-page {
                 display: block !important;
+                width: 100% !important;
+                max-width: 100vw !important;
+                overflow-x: hidden !important;
             }
             
             .table-page tr,
             .table-page td {
                 display: block !important;
                 width: 100% !important;
+                max-width: 100vw !important;
+                box-sizing: border-box !important;
             }
             
             td[valign="top"] {
                 padding: 15px !important;
+                width: 100% !important;
+                max-width: 100vw !important;
+                overflow-x: hidden !important;
             }
+            
+            /* Исправляем контент */
+            .content,
+            .calculator-wrapper,
+            .price-container,
+            .gallery-container {
+                width: 100% !important;
+                max-width: 100vw !important;
+                box-sizing: border-box !important;
+                padding-left: 15px !important;
+                padding-right: 15px !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                overflow-x: hidden !important;
+            }
+            
+            /* Исправляем сетку проекций */
+            .projections-grid {
+                grid-template-columns: 1fr !important;
+                gap: 15px !important;
+                width: 100% !important;
+            }
+            
+            .projection-card {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            
+            .image-container {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            
+            .car-image,
+            .overlay-canvas {
+                width: 100% !important;
+                height: auto !important;
+                max-width: 100% !important;
+            }
+            
+            /* Исправляем таблицы */
+            .selected-parts-table {
+                display: block !important;
+                width: 100% !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+            
+            /* Исправляем модальные окна */
+            .modal-content {
+                width: 95% !important;
+                max-width: 95% !important;
+                margin: 0 auto !important;
+            }
+        }
+        
+        /* Для очень маленьких экранов */
+        @media screen and (max-width: 480px) {
+            td[valign="top"] {
+                padding: 10px !important;
+            }
+            
+            .calculator-container,
+            .benefits-section {
+                padding: 15px !important;
+            }
+        }
+        
+        /* ОБЩИЕ ПРАВИЛА ДЛЯ ВСЕХ УСТРОЙСТВ */
+        * {
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            max-width: 100vw;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
         }
     </style>
     
