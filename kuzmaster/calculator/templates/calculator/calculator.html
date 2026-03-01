@@ -490,6 +490,28 @@
         }
     }    
 </style>
+<style>
+/* Стили для анимации карты */
+.contact-item {
+    cursor: pointer;
+    user-select: none;
+}
+
+.contact-item:hover #mapArrow {
+    opacity: 1;
+}
+
+#mapContainer {
+    transition: max-height 0.5s ease-in-out, margin-top 0.5s ease-in-out;
+}
+
+/* Адаптация для мобильных */
+@media screen and (max-width: 768px) {
+    #mapContainer iframe {
+        height: 300px;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -498,9 +520,10 @@
     <div class="company-header">
         <h1 class="company-name">Кузовной мастер</h1>
         <div class="company-contacts">
-            <div class="contact-item">
+            <div class="contact-item" onclick="toggleMap()" style="cursor: pointer;">
                 <i class="fas fa-map-marker-alt"></i>
                 <span>Жердева, 10в, к1</span>
+                <i class="fas fa-chevron-down" id="mapArrow" style="margin-left: 5px; font-size: 14px; transition: transform 0.3s;"></i>
             </div>
             <div class="contact-item">
                 <i class="fas fa-phone"></i>
@@ -509,6 +532,18 @@
             <div class="contact-item">
                 <i class="fas fa-clock"></i>
                 <span>Ежедневно 9:00 - 20:00</span>
+            </div>
+        </div>
+        
+        <!-- Скрытая карта -->
+        <div id="mapContainer" style="max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; margin-top: 0;">
+            <div style="margin-top: 20px; border-radius: 15px; overflow: hidden; border: 1px solid #4a4a4a;">
+                <iframe src="https://yandex.ru/map-widget/v1/?z=18&ol=biz&oid=204897743216" 
+                        width="100%" 
+                        height="400" 
+                        frameborder="0"
+                        style="display: block;">
+                </iframe>
             </div>
         </div>
     </div>
@@ -759,6 +794,25 @@
         }{% if not forloop.last %},{% endif %}
         {% endfor %}
     ]
+</script>
+
+<script>
+function toggleMap() {
+    const mapContainer = document.getElementById('mapContainer');
+    const mapArrow = document.getElementById('mapArrow');
+    
+    if (mapContainer.style.maxHeight === '0px' || mapContainer.style.maxHeight === '') {
+        // Открываем карту
+        mapContainer.style.maxHeight = '500px';
+        mapContainer.style.marginTop = '20px';
+        mapArrow.style.transform = 'rotate(180deg)';
+    } else {
+        // Закрываем карту
+        mapContainer.style.maxHeight = '0';
+        mapContainer.style.marginTop = '0';
+        mapArrow.style.transform = 'rotate(0deg)';
+    }
+}
 </script>
 {% endblock %}
 
