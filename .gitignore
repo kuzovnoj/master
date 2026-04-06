@@ -4,9 +4,7 @@ ex.py
 .env
 .venv/
 certbot/
-nginx/
 kuzmaster_old/
-compose.yml
 media/
 logs/
 temp/
