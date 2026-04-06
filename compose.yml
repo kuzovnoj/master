@@ -64,14 +64,21 @@ services:
       - kuzmaster
 
 
-  certbot:
-      image: certbot/certbot
-      volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-      command: certonly --webroot --webroot-path=/var/www/certbot/ --email kuzovnojmaster@gmail.com --agree-tos --no-eff-email -d kuzovnojmaster.ru
-      depends_on:
-      - nginx
+certbot:
+  image: certbot/certbot
+  container_name: certbot
+  restart: unless-stopped
+  volumes:
+    - ./certbot/conf:/etc/letsencrypt
+    - ./certbot/www:/var/www/certbot
+  entrypoint: /bin/sh -c "
+    while true; do
+      certbot renew --webroot --webroot-path=/var/www/certbot --non-interactive --quiet;
+      sleep 43200;  # 12 часов
+    done
+  "
+  depends_on:
+    - nginx
 
 
 networks:
