@@ -1,0 +1,83 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: psgr
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USERNAME}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    networks:
+      - dbnet
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "8080:8080"
+    links:
+      - "postgres:db"
+    networks:
+      - dbnet
+    depends_on:
+      - postgres
+
+  kuzmaster:
+    build: ./kuzmaster
+    image: kuzmaster
+    container_name: kuzmaster
+    restart: always
+    command: "gunicorn -c gunicorn.py kuzmaster.wsgi"
+    env_file:
+      - .env
+    links:
+      - "postgres:dbps"
+    networks:
+      - dbnet
+    volumes:
+      - ./kuzmaster:/app/www/kuzmaster
+    ports:
+       - "8000:8000"
+    depends_on:
+      - postgres
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-server
+    restart: always
+    networks:
+      - dbnet
+    expose:
+      - 8088
+    ports:
+      - "80:8088"
+      - "443:443"
+    volumes:
+      - ./kuzmaster/static:/app/www/kuzmaster/static
+      - ./kuzmaster/media:/app/www/kuzmaster/media
+      - ./kuzmaster/logs:/app/www/kuzmaster/logs
+      - ./nginx:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - kuzmaster
+
+
+  certbot:
+      image: certbot/certbot
+      volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+      command: certonly --webroot --webroot-path=/var/www/certbot/ --email kuzovnojmaster@gmail.com --agree-tos --no-eff-email -d kuzovnojmaster.ru
+      depends_on:
+      - nginx
+
+
+networks:
+  dbnet:
+    driver: bridge
+
+volumes:
+  postgres-data:
+
