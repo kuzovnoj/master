@@ -71,12 +71,8 @@ certbot:
   volumes:
     - ./certbot/conf:/etc/letsencrypt
     - ./certbot/www:/var/www/certbot
-  entrypoint: /bin/sh -c "
-    while true; do
-      certbot renew --webroot --webroot-path=/var/www/certbot --non-interactive --quiet;
-      sleep 43200;  # 12 часов
-    done
-  "
+    - ./certbot-renew.sh:/renew.sh:ro
+  entrypoint: /bin/sh /renew.sh
   depends_on:
     - nginx
 
