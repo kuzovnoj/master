@@ -13,18 +13,18 @@ class HomePageTestCase(TestCase):
     def setUp(self):
         pass
 
-    def test_main_page_open(self):
+    def test_in_work_page_open(self):
         User = get_user_model()
         u = User.objects.get(pk=1)
         self.client.force_login(u)
-        path = reverse('home')
+        path = reverse('in_work')
         response = self.client.get(path)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertIn('kuzov/index.html', response.template_name)
-        self.assertEqual(response.context_data['title'], 'Главная страница')
+        self.assertEqual(response.context_data['title'], 'В работе')
     
     def test_unathorized_login_redirect(self):
-        path = reverse('home')
+        path = reverse('in_work')
         response = self.client.get(path)
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
 

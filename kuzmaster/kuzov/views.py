@@ -21,7 +21,7 @@ from rest_framework import permissions
 class KuzovHome(RedirectToCalculatorMixin, DataMixin, ListView):
     template_name = 'kuzov/index.html'
     context_object_name = 'naryad'
-    title_page = 'Главная страница'
+    title_page = 'В работе'
 
     def get_queryset(self):
         if self.request.user.is_superuser:
@@ -66,7 +66,7 @@ class ZakazNaryad2(LoginRequiredMixin, CreateView, DataMixin):
     form_class = forms.FormZakazNaryad
     template_name = 'kuzov/addauto2.html'
     title_page = 'Новый заказ-наряд'
-    success_url = reverse_lazy('home')
+    success_url =         reverse_lazy('in_work')
 
     def get_initial(self):
         initial = super(ZakazNaryad2, self).get_initial()
@@ -130,7 +130,7 @@ class AddAvans(PermissionRequiredMixin, LoginRequiredMixin, CreateView, DataMixi
     form_class = forms.FormAvans
     template_name = 'kuzov/addauto2.html'
     title_page = 'Взять аванс'
-    success_url = reverse_lazy('home')
+    success_url =         reverse_lazy('in_work')
     permission_required = 'kuzov.add_avans'
 
     def get_initial(self):
@@ -143,7 +143,7 @@ class AddOplata(PermissionRequiredMixin, LoginRequiredMixin, CreateView, DataMix
     form_class = forms.FormOplata
     template_name = 'kuzov/addauto2.html'
     title_page = 'Добавить оплату'
-    success_url = reverse_lazy('home')
+    success_url =         reverse_lazy('in_work')
     permission_required = 'kuzov.add_oplata'
     
     def get_initial(self):
@@ -156,7 +156,7 @@ class AddRaskhod(PermissionRequiredMixin, LoginRequiredMixin, CreateView, DataMi
     form_class = forms.FormRaskhod
     template_name = 'kuzov/addauto2.html'
     title_page = 'Добавить расходник'
-    success_url = reverse_lazy('home')
+    success_url =         reverse_lazy('in_work')
     permission_required = 'kuzov.add_raskhod'
 
     def get_initial(self):
@@ -209,33 +209,33 @@ class EditOrder(LoginRequiredMixin, DataMixin, UpdateView):
     model = ZakazNaryad
     fields = ['remont', 'price', 'in_work']
     template_name = 'kuzov/addauto2.html'
-    success_url = reverse_lazy('home')
+    success_url =         reverse_lazy('in_work')
 
 
 class EditAuto(LoginRequiredMixin, DataMixin, UpdateView):
     model = Auto
     fields = ['marka', 'gos_num', 'photo']
     template_name = 'kuzov/addauto2.html'
-    success_url = reverse_lazy('home')
+    success_url =         reverse_lazy('in_work')
 
 
 class EditRaskhod(LoginRequiredMixin, DataMixin, UpdateView):
     model = Raskhod
     fields = ['zakaz', 'amount', 'name', 'spare_part', 'date', 'cheque', 'cashier']
     template_name = 'kuzov/addauto2.html'
-    success_url = reverse_lazy('home')
+    success_url =         reverse_lazy('in_work')
 
 class EditAvans(LoginRequiredMixin, DataMixin, UpdateView):
     model = Avans
     fields = ['zakaz', 'amount', 'comment', 'date']
     template_name = 'kuzov/addauto2.html'
-    success_url = reverse_lazy('home')
+    success_url =         reverse_lazy('in_work')
 
 class EditOplata(LoginRequiredMixin, DataMixin, UpdateView):
     model = Oplata
     fields = ['zakaz', 'amount', 'date']
     template_name = 'kuzov/addauto2.html'
-    success_url = reverse_lazy('home')
+    success_url =         reverse_lazy('in_work')
 
 class OrderRaskhod(LoginRequiredMixin, DataMixin, ListView):
     template_name = 'kuzov/order_raskhod.html'

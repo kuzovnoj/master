@@ -7,7 +7,7 @@ router = routers.DefaultRouter()
 router.register(r'open', views.APIKuzovView)
 
 urlpatterns = [
-        path('', views.KuzovHome.as_view(), name='home'),
+        path('', views.KuzovHome.as_view(), name='in_work'),
         path('done/', views.KuzovHomeDone.as_view(), name='home_done'),
         path('zakaz_naryad/', views.add_auto_view, name='zakaz_naryad'),
         path('zakaz_naryad2/<slug:pk_slug>/', views.ZakazNaryad2.as_view(), name='zakaz_naryad2'),

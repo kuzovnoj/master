@@ -8,7 +8,7 @@ class RedirectToCalculatorMixin(AccessMixin):
     
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return redirect('calculator:calculator', car_model_slug='sedan')  # или другой slug по умолчанию
+            return redirect('home')
         return super().dispatch(request, *args, **kwargs)
 
 # Telegram ID
@@ -52,13 +52,13 @@ def send_telegram_message(message, master_id: int = 1):
 
 # коллекция меню для всех
 menu = [
-    {'title': "Калькулятор", 'url_name': 'calculator:calculator', 'url_params': {'car_model_slug': 'sedan'}},
+    {'title': "Калькулятор", 'url_name': 'home'},
     {'title': "Галлерея работ", 'url_name': 'gallery:gallery'}, 
     {'title': "Услуги и цены", 'url_name': 'works:price_list'},
 ]
 # меню для сотрудников
 menuStaff = [
-    {'title': "Главная", 'url_name': 'home'},
+    {'title': "В работе", 'url_name': 'in_work'},
     {'title': "Сделано", 'url_name': 'home_done'},
     {'title': "ЗН", 'url_name': 'zakaz_naryad'},
 ]

@@ -19,13 +19,15 @@ from django.urls import path, include
 from kuzov.views import page_not_found
 from kuzmaster import settings
 from django.conf.urls.static import static
+from calculator.views import calculator_view
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('kuzov.urls')),
+    path('', calculator_view, kwargs={'car_model_slug': 'sedan'}, name='home'),
+    path('in_work/', include('kuzov.urls')),
     path('gallery/', include('gallery.urls')),
     path('works/', include('works.urls')), 
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

@@ -19,7 +19,7 @@ class LoginUser(LoginView):
     extra_context = {'title': 'Авторизация'}
 
     def get_success_url(self):
-        return reverse_lazy('home')
+        return reverse_lazy('in_work')
 
 
 class RegisterUser(CreateView):

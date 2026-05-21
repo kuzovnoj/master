@@ -95,7 +95,7 @@ def add_part_view(request):
     
     if not part_id or not service_id:
         messages.error(request, 'Не выбрана деталь или услуга')
-        return redirect(request.META.get('HTTP_REFERER', '/calculator/sedan/'))
+        return redirect(request.META.get('HTTP_REFERER', '/'))
     
     # Получаем сессию
     if not request.session.session_key:
@@ -117,7 +117,7 @@ def add_part_view(request):
             service = part_service.service
         except PartService.DoesNotExist:
             messages.error(request, f'Услуга не доступна для этой детали')
-            return redirect('calculator:calculator', car_model_slug=part.projection.car_model.slug)
+            return redirect('home')
         
         # Получаем сессию расчета
         calculation_session, created = CalculationSession.objects.get_or_create(
@@ -140,21 +140,20 @@ def add_part_view(request):
         else:
             messages.success(request, f'Услуга для детали "{part.name}" обновлена')
             
-        return redirect('calculator:calculator', car_model_slug=part.projection.car_model.slug)
+        return redirect('home')
             
     except BodyPart.DoesNotExist:
         messages.error(request, 'Деталь не найдена')
     except Exception as e:
         messages.error(request, f'Ошибка: {str(e)}')
     
-    return redirect(request.META.get('HTTP_REFERER', '/calculator/sedan/'))
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @require_POST
 def remove_part_view(request, selected_part_id):
     """Удаление детали из расчета"""
     try:
         selected_part = SelectedPart.objects.get(id=selected_part_id)
-        car_model_slug = selected_part.part.projection.car_model.slug
         part_name = selected_part.part.name
         
         # Проверяем, принадлежит ли деталь текущей сессии
@@ -166,9 +165,8 @@ def remove_part_view(request, selected_part_id):
             
     except SelectedPart.DoesNotExist:
         messages.error(request, 'Деталь не найдена')
-        car_model_slug = 'sedan'  # Значение по умолчанию
     
-    return redirect('calculator:calculator', car_model_slug=car_model_slug)
+    return redirect('home')
 
 @require_POST
 def update_service_view(request, selected_part_id):
@@ -177,12 +175,11 @@ def update_service_view(request, selected_part_id):
     
     if not service_id:
         messages.error(request, 'Не выбрана услуга')
-        return redirect(request.META.get('HTTP_REFERER', 'calculator:calculator'))
+        return redirect(request.META.get('HTTP_REFERER', 'home'))
     
     try:
         selected_part = SelectedPart.objects.get(id=selected_part_id)
         service = Service.objects.get(id=service_id, is_active=True)
-        car_model_slug = selected_part.part.projection.car_model.slug
         
         # Проверяем, принадлежит ли деталь текущей сессии
         if request.session.session_key and selected_part.session.session_key == request.session.session_key:
@@ -195,9 +192,8 @@ def update_service_view(request, selected_part_id):
             
     except (SelectedPart.DoesNotExist, Service.DoesNotExist):
         messages.error(request, 'Ошибка при обновлении услуги')
-        car_model_slug = 'sedan'
     
-    return redirect('calculator:calculator', car_model_slug=car_model_slug)
+    return redirect('home')
 
 @csrf_exempt
 def create_appointment(request):
