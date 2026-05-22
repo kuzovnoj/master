@@ -109,9 +109,9 @@ def add_auto_view(request):
 
 @login_required
 def last_operations_view(request):
-    avans = Avans.objects.filter(cashier=request.user.pk).order_by('-time_create')[:10]
-    raskhod = Raskhod.objects.filter(cashier=request.user.pk).order_by('-time_create')[:10]
-    oplata = Oplata.objects.filter(cashier=request.user.pk).order_by('-time_create')[:10]
+    avans = Avans.objects.filter(cashier=request.user.pk).order_by('-time_create')[:12]
+    raskhod = Raskhod.objects.filter(cashier=request.user.pk).order_by('-time_create')[:12]
+    oplata = Oplata.objects.filter(cashier=request.user.pk).order_by('-time_create')[:12]
 
     mixin = DataMixin()
     base_context = mixin.extra_context
