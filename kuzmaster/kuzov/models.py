@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.core.validators import RegexValidator
 from django.urls import reverse
+from kuzmaster.image_utils import compress_image
 
 
 class Auto(models.Model):
@@ -13,6 +14,11 @@ class Auto(models.Model):
 
     def __str__(self):
         return self.marka + ' ' + self.gos_num
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.photo:
+            compress_image(self.photo, max_width=1024, max_height=1024, quality=80)
 
 
 class ZakazNaryad(models.Model):
@@ -81,7 +87,12 @@ class Raskhod(models.Model):
     cheque = models.ImageField(upload_to='cheques/%Y/%m/%d/', default=None, blank=True, null=True)
     time_create = models.DateTimeField(auto_now_add=True)
     cashier = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, default=None)
-    
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.cheque:
+            compress_image(self.cheque, max_width=1024, max_height=1024, quality=80)
+
 
 class Client(models.Model):
     name = models.CharField(max_length=30)

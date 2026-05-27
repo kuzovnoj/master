@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
+from kuzmaster.image_utils import compress_image
 
 class CarBrand(models.Model):
     """Марка автомобиля"""
@@ -80,6 +81,13 @@ class GalleryImage(models.Model):
     def __str__(self):
         return f"{self.car_model} - {self.created_at.strftime('%d.%m.%Y')}"
     
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.before_image:
+            compress_image(self.before_image, max_width=1920, max_height=1920, quality=85)
+        if self.after_image:
+            compress_image(self.after_image, max_width=1920, max_height=1920, quality=85)
+
     @property
     def car_brand(self):
         return self.car_model.brand
