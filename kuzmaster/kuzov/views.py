@@ -126,6 +126,30 @@ def last_operations_view(request):
 
     return render(request, 'kuzov/last_operations.html', context=union_data)
 
+
+@login_required
+def income_view(request):
+    from django.db.models import Sum
+    total = None
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+
+    if date_from and date_to:
+        total = Avans.objects.filter(
+            zakaz__master=request.user,
+            date__gte=date_from,
+            date__lte=date_to
+        ).aggregate(Sum('amount'))['amount__sum']
+
+    mixin = DataMixin()
+    return render(request, 'kuzov/income.html', {
+        **mixin.extra_context,
+        'title': 'Доход',
+        'total': total,
+        'date_from': date_from,
+        'date_to': date_to,
+    })
+
 class AddAvans(PermissionRequiredMixin, LoginRequiredMixin, CreateView, DataMixin):
     form_class = forms.FormAvans
     template_name = 'kuzov/addauto2.html'

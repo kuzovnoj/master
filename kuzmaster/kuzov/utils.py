@@ -61,6 +61,7 @@ menuStaff = [
     {'title': "В работе", 'url_name': 'in_work'},
     {'title': "Сделано", 'url_name': 'home_done'},
     {'title': "ЗН", 'url_name': 'zakaz_naryad'},
+    {'title': "Доход", 'url_name': 'income'},
 ]
 # коллекция меню для кассиров
 menuSuperUser = [
