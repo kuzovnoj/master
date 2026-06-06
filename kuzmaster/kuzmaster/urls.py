@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic.base import RedirectView
 from kuzov.views import page_not_found
 from kuzmaster import settings
 from django.conf.urls.static import static
@@ -33,6 +34,7 @@ urlpatterns = [
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path('users/', include('users.urls', namespace='users')),
+    path('calculator/<slug:car_model_slug>/', RedirectView.as_view(url='/', permanent=True)),
     path('calculator/', include('calculator.urls')),
 ]
 
