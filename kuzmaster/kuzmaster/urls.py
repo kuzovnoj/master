@@ -16,11 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic.base import RedirectView
+from django.views.generic.base import RedirectView, TemplateView
+from django.contrib.sitemaps.views import sitemap
 from kuzov.views import page_not_found
 from kuzmaster import settings
 from django.conf.urls.static import static
 from calculator.views import calculator_view
+from .sitemaps import StaticViewSitemap
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
@@ -34,6 +36,8 @@ urlpatterns = [
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path('users/', include('users.urls', namespace='users')),
+    path('sitemap.xml', sitemap, {'sitemaps': {'static': StaticViewSitemap}}, name='sitemap'),
+    path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain'), name='robots'),
     path('calculator/<slug:car_model_slug>/', RedirectView.as_view(url='/', permanent=True)),
     path('calculator/', include('calculator.urls')),
 ]

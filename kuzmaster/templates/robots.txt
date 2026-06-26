@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /in_work/
+Disallow: /users/
+Disallow: /api/
+
+Sitemap: https://kuzovnojmaster.ru/sitemap.xml
