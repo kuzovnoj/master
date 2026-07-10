@@ -28,6 +28,7 @@ def gallery_view(request):
     form = FilterForm(request.GET or None)
     
     mixin = DataMixin()
+    mixin.extra_context['description'] = 'Фотографии работ по кузовному ремонту автомобилей. Примеры до и после покраски, рихтовки.'
     base_context = mixin.extra_context
 
     context = {

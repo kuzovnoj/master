@@ -70,6 +70,7 @@ def calculator_view(request, car_model_slug):
             })
     
     mixin = DataMixin()
+    mixin.extra_context['description'] = 'Калькулятор кузовного ремонта. Онлайн-расчёт стоимости покраски и ремонта автомобиля. Запись на осмотр.'
     base_context = mixin.extra_context
     
     context = {

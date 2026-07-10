@@ -3,8 +3,6 @@ from django.urls import reverse
 
 
 class StaticViewSitemap(Sitemap):
-    priority = None
-    changefreq = None
     protocol = 'https'
 
     items = ['home', 'gallery:gallery', 'works:price_list']

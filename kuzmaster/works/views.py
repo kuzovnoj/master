@@ -14,6 +14,7 @@ def price_list_view(request):
     ).order_by('order')
 
     mixin = DataMixin()
+    mixin.extra_context['description'] = 'Услуги и цены на кузовной ремонт. Стоимость покраски деталей, рихтовки, сварочных работ.'
     base_context = mixin.extra_context
 
     context = {
