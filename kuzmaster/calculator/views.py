@@ -74,6 +74,7 @@ def calculator_view(request, car_model_slug):
     base_context = mixin.extra_context
     
     context = {
+        'title': 'Главная',
         'car_model': car_model,
         'projections': projections,
         'parts_by_projection': parts_by_projection,
