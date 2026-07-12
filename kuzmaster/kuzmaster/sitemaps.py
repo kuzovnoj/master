@@ -5,7 +5,8 @@ from django.urls import reverse
 class StaticViewSitemap(Sitemap):
     protocol = 'https'
 
-    items = ['home', 'gallery:gallery', 'works:price_list']
+    def items(self):
+        return ['home', 'gallery:gallery', 'works:price_list']
 
     def location(self, item):
         return reverse(item)
