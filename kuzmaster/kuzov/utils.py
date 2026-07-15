@@ -1,7 +1,10 @@
 import requests
+import urllib3
 from django.conf import settings
 from django.contrib.auth.mixins import AccessMixin
 from django.shortcuts import redirect
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class RedirectToCalculatorMixin(AccessMixin):
     """Перенаправляет неавторизованных пользователей на калькулятор"""
@@ -19,36 +22,34 @@ masters = {
     6: 7638694744  # Юрий
     }
 
-# отправка сообщений мастерам если в текущих заказ-нарядах есть изменения
-def send_telegram_message(message, master_id: int = 1):
+masters_max = {
+    }
+
+def _send(token, chat_id, message):
     try:
-        token = settings.TELEGRAM_BOT_TOKEN
-        chat_id = settings.TELEGRAM_CHAT_ID
-        
         url = f"https://api.telegram.org/bot{token}/sendMessage"
-        payload = {
-            'chat_id': chat_id,
-            'text': message, # looey + sprout=cannon
-            'parse_mode': 'HTML'
-        }
-        
-        # первое сообщение админу
-        response = requests.post(url, data=payload, timeout=10)
-        
-        # второе сообщение мастеру
-        if master_id in masters:
-            payload = {
-                'chat_id': masters[master_id],
-                'text': message, # looey + sprout=cannon
-                'parse_mode': 'HTML'
-            }
-            response = requests.post(url, data=payload, timeout=10)
-        
-        return response.status_code == 200
-        
+        payload = {'chat_id': chat_id, 'text': message, 'parse_mode': 'HTML'}
+        requests.post(url, data=payload, timeout=10)
     except Exception as e:
         print(f"Ошибка отправки в Telegram: {e}")
-        return False
+
+def _send_max(token, user_id, message):
+    try:
+        url = "https://platform-api2.max.ru/messages"
+        headers = {"Authorization": token, "Content-Type": "application/json"}
+        params = {"user_id": user_id}
+        payload = {"text": message, "format": "html"}
+        requests.post(url, headers=headers, params=params, json=payload, timeout=10, verify=False)
+    except Exception as e:
+        print(f"Ошибка отправки в Max: {e}")
+
+def send_telegram_message(message, master_id: int = 1):
+    _send(settings.TELEGRAM_BOT_TOKEN, settings.TELEGRAM_CHAT_ID, message)
+    if master_id in masters:
+        _send(settings.TELEGRAM_BOT_TOKEN, masters[master_id], message)
+    _send_max(settings.MAX_BOT_TOKEN, settings.MAX_USER_ID, message)
+    if master_id in masters_max:
+        _send_max(settings.MAX_BOT_TOKEN, masters_max[master_id], message)
 
 # коллекция меню для всех
 menu = [
