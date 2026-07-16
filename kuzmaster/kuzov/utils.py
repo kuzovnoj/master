@@ -23,6 +23,8 @@ masters = {
     }
 
 masters_max = {
+    3: 116274739,
+    6: 109542528
     }
 
 def _send(token, chat_id, message):
