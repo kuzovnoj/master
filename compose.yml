@@ -4,6 +4,7 @@ services:
     image: kuzmaster
     container_name: kuzmaster_app
     restart: always
+    user: "0:0"
     command: "gunicorn -c gunicorn.py kuzmaster.wsgi"
     env_file:
       - .env
