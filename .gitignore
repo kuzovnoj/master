@@ -5,7 +5,7 @@ ex.py
 .venv/
 certbot/
 kuzmaster_old/
-media/
+#media/
 logs/
 temp/
 AGENTS.md
