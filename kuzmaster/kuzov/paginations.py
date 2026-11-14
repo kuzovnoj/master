@@ -3,4 +3,4 @@ from rest_framework.pagination import PageNumberPagination
 
 class CustomPagination(PageNumberPagination):
     page_size_query_param = 'page_size'  # Параметр запроса для изменения размера страницы
-    max_page_size = 10  # Максимально допустимый размер страницы
+    max_page_size = 20  # Максимально допустимый размер страницы

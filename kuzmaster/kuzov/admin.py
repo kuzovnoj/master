@@ -8,7 +8,7 @@ from django.db.models import Count, Sum, Avg, Max, Min
 class AutoAdmin(admin.ModelAdmin):
     list_display = ('id', 'marka', 'gos_num', 'time_create')
     list_editable = ('marka', 'gos_num')
-    list_per_page = 12
+    list_per_page = 20
 
 
 @admin.register(ZakazNaryad)
@@ -16,7 +16,7 @@ class ZakazNaryadAdmin(admin.ModelAdmin):
     list_display = ('id', 'auto', 'master', 'client', 'remont', 'price', 'oplata',
                     'avans', 'raskhod', 'time_create', 'time_update', 'in_work')
     list_editable = ('remont', 'price', 'in_work')
-    list_per_page = 12
+    list_per_page = 20
 
     def oplata(self, zakaznaryad: ZakazNaryad):
         z1 = ZakazNaryad.objects.filter(oplata__zakaz=zakaznaryad.id).aggregate(Sum('oplata__amount'))
@@ -34,24 +34,24 @@ class ZakazNaryadAdmin(admin.ModelAdmin):
 class AutoAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'phone')
     list_editable = ('name', 'phone')
-    list_per_page = 12
+    list_per_page = 20
 
 @admin.register(Oplata)
 class OplataAdmin(admin.ModelAdmin):
     list_display = ('id', 'zakaz', 'amount', 'time_create')
     list_editable = ('zakaz', 'amount')
-    list_per_page = 12
+    list_per_page = 20
 
 
 @admin.register(Avans)
 class AvansAdmin(admin.ModelAdmin):
     list_display = ('id', 'zakaz', 'amount', 'time_create')
     list_editable = ('zakaz', 'amount')
-    list_per_page = 12
+    list_per_page = 20
 
 
 @admin.register(Raskhod)
 class AvansAdmin(admin.ModelAdmin):
     list_display = ('id', 'zakaz', 'amount', 'time_create', 'name', 'date', 'cheque')
     list_editable = ('zakaz', 'amount', 'name', 'date', 'cheque')
-    list_per_page = 12
+    list_per_page = 20

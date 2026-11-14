@@ -46,9 +46,9 @@ def _send_max(token, user_id, message):
         print(f"Ошибка отправки в Max: {e}")
 
 def send_telegram_message(message, master_id: int = 1):
-    _send(settings.TELEGRAM_BOT_TOKEN, settings.TELEGRAM_CHAT_ID, message)
-    if master_id in masters:
-        _send(settings.TELEGRAM_BOT_TOKEN, masters[master_id], message)
+    # _send(settings.TELEGRAM_BOT_TOKEN, settings.TELEGRAM_CHAT_ID, message)
+    # if master_id in masters:
+    #     _send(settings.TELEGRAM_BOT_TOKEN, masters[master_id], message)
     _send_max(settings.MAX_BOT_TOKEN, settings.MAX_USER_ID, message)
     if master_id in masters_max:
         _send_max(settings.MAX_BOT_TOKEN, masters_max[master_id], message)
@@ -75,7 +75,7 @@ menuSuperUser = [
 ]
 
 class DataMixin:
-    paginate_by = 10
+    paginate_by = 20
     title_page = None
     description_page = None
     cat_selected = None
